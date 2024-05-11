@@ -1,0 +1,137 @@
+@charset "EUC-KR";
+
+/* cs_main.jsp */
+/* .container.cs { */
+/* 	margin-left: auto; */
+/* 	margin-right: auto; */
+/* 	max-width: 1280px; */
+/* 	padding: 40px 40px 160px; */
+/* } */
+
+/* .container.cs .sidebarArea { */
+/* 	float: left; */
+/* 	width: 160px; */
+/* 	margin-right: 40px; */
+/* } */
+
+/* .container .contentArea { */
+/* 	overflow: hidden; */
+/* } */
+
+
+/* 사이드바 사라졌을 때 생기는 햄버거 메뉴 */
+.hidden_nav {
+	display: flex;
+	outline: none!important;
+}
+.hidden_nav:active {
+	outline: none!important;
+}
+@media only screen and (min-width: 768px) {
+	.hidden_nav {
+		display: none;
+	}
+}
+
+.content_title.border {
+   padding-bottom: 16px;
+   border-bottom: 3px solid #222!important;
+   border-top: none!important;
+   border-left: none!important;
+   border-right: none!important;
+}
+
+.content_title {
+	display: flex;
+	padding: 5px 0 6px;
+}
+
+.bottomRow {
+	margin-top: 30px;
+	border-top: 3px solid #222!important;
+}
+
+.noticeTitleArea {
+	display: flex;
+	padding: 20px 0;
+	border-bottom: 1px solid #ebebeb;
+}
+
+.title {
+	flex: 1 1;
+	font-size: 17px;
+	letter-spacing: -.36px;
+	font-weight: bold;
+}
+
+
+
+/* cs_notic.jsp */
+.content_main.notice ul {
+	padding: 0;
+	list-style: none;
+}
+
+li {
+	list-style: none;
+}
+
+.content_main.notice a {
+	color: #333;
+	text-decoration: none;
+	padding: 17px 0 19px;
+	display: flex;
+	align-items: center;
+	border-bottom: 1px solid #ebebeb;
+	cursor: pointer;
+}
+
+.content_main.notice a>p {
+	margin: 0 10px 0 0;
+/* 	font-size: 15px; */
+	letter-spacing: -.15px;
+}
+
+
+/* cs_notice_view */
+.notice_view .head{
+	padding: 17px 0 19px;
+	display: flex;
+	align-items: center;
+	border-bottom: 1px solid #ebebeb;
+	cursor: pointer;
+}
+
+.notice_view .head .titleArea {
+	margin-top: 10px;
+}
+
+.notice_view .head .titleArea .date {
+	margin-bottom: 1px;
+	display: inline-flex;
+	font-size: 12px;
+	letter-spacing: -.06px;
+}
+
+.notice_view .head .titleArea .title {
+	letter-spacing: -.15px;
+}
+
+.notice_view .contentArea {
+	display: block;
+	padding: 30px 30px 28px;
+	background-color: #fafafa;
+	border-bottom: 1px solid #ebebeb;
+	font-size: 14px;
+	letter-spacing: -.21px;
+}
+
+.notice_view .content {
+	max-width: 640px;
+    word-break: break-word;
+}
+
+.notice_view .btnArea {
+	margin-top: 30px;
+	text-align: center;
+}

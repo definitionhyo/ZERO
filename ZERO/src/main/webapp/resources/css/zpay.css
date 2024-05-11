@@ -1,0 +1,839 @@
+@charset "UTF-8";
+	html, .container, .contentArea, form, .chargeContentArea, .successContentArea {
+		height: 100%
+	}
+
+	body {
+		height: 100%
+	}
+
+	article{
+		min-height: 100%;
+		background-color: #f4f6f8;
+	}
+
+	.container {
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 1280px;
+		padding: 40px 40px;
+/* 		padding-bottom: 20px; */
+	}
+	
+	.contentArea {
+		margin: auto;
+		max-width: 568px!important;
+		min-width: 360px!important;
+	}
+
+	.contentAreaZpay {
+		margin: auto;
+		max-width: 568px!important;
+		min-width: 360px!important;
+	}
+	
+	/* ============================ zpay_regist_form.jsp ============================= */
+	.payWalletWidgetArea  .zpayArea #zpayBankAuthButton, #bankUserInfoButton, #zpayRegistButton {
+		margin-bottom: 5px;
+		border-top-right-radius: 8px;
+		border-bottom-right-radius: 8px;
+		display: block;
+		padding: 10px 0 9px;
+		background-color: rgba(0,0,0,.5);
+		font-size: 15px;
+		font-weight: 700;
+		line-height: 21px;
+		text-align: center;
+		color: #fff;
+	}
+
+
+
+	/* ============================ zpay_main.jsp ============================= */
+	.zpayManageArea {
+		margin-bottom: 12px;
+		padding: 20px;
+		border-radius: 16px;
+		background-color: #fff;
+		box-shadow: 0 4px 16px 0 rgba(0,0,0,.05);
+	}
+	
+	/* -------------------------- zpay_main.jsp 프로필 ---------------------- */
+	.profileArea {
+/* 		padding: 20px 0 0; */
+		display: flex;
+		display: -ms-flexbox;
+		align-items: center;
+		-ms-flex-align: center;
+/* 		padding: 10px 20px 0; */
+		color: #222;
+	}
+	
+	.profileArea .profileLink {
+		flex: 1 1 auto;
+		-ms-flex: 1 1 auto;
+		position: relative;
+		min-height: 50px;
+		padding: 0 10px 0 60px;
+	}
+	
+	.profileArea .profileLink .profileImg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		overflow: hidden;
+/* 		background: url(../mypage_img/blank_profile.4347742.png); */
+/* 		background: url(data:image/png;base64,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) no-repeat; */
+		background-size: 50px 50px;
+	}
+
+	.profileArea .profileLink .profileInfo {
+		display: block;
+		padding-top: 4px;
+		font-size: 13px;
+		font-weight: 500;
+		color: #999;
+		line-height: 15px;
+	}
+
+	.profileArea .profileLink .profileInfo .profileName {
+		display: block;
+		margin-bottom: 4px;
+		font-size: 18px;
+		color: #222;
+		line-height: 20px;
+	}
+	
+	/* -------------------------- zpay_main.jsp 잔액, 충전, 환급 버튼 영역 ---------------------- */
+	.payWalletWidgetArea {
+		flex: 1 1;
+/* 		display: flex; */
+		margin: 16px 0 0;
+		border-radius: 9px;
+		box-shadow: inset 0 -2px 0 0 rgba(0,0,0,.2), 0 6px 8px 0 rgba(0,0,0,.15);
+		background-color: #2c333a;
+		background-image: linear-gradient(134deg,#2c333a -2%, #424c57 98%);
+		letter-spacing: -1px;
+	}
+	
+	.payWalletWidgetArea  .zpayArea {
+		min-height: 160px;
+		font-weight: 700;
+		text-shadow: 0 1px 0 rgba(0,0,0,.3);
+		color: #fff;
+	}
+
+	.payWalletWidgetArea  .zpayArea .balanceArea {
+		position: relative;
+		padding: 15px 16px 10px;
+	}
+
+	.payWalletWidgetArea  .zpayArea .balanceArea .title {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		display: block;
+		font-size: 15px;
+		line-height: 22px;
+	}
+
+	.payWalletWidgetArea  .zpayArea .balanceArea .balance {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		position: relative;
+		display: inline-block;
+		max-width: 100%;
+		margin-top: 20px;
+/* 		margin-top: 28px; */
+/* 		padding-right: 9px; */
+		box-sizing: border-box;
+		font-size: 28px;
+		line-height: 34px;
+/* 		font-size: 19px; */
+/* 		line-height: 23px; */
+		vertical-align: top;
+	}
+
+	.payWalletWidgetArea  .zpayArea .zpayLinkArea {
+		display: flex;
+		display: -ms-flexbox;
+		padding: 10px 12px 12px;
+	}
+
+	.payWalletWidgetArea  .zpayArea .zpayChargeLink {
+		flex: 1 1;
+	}
+
+	.payWalletWidgetArea  .zpayArea .zpayChargeLink .zpayChargeButton {
+		border-top-left-radius: 8px;
+		border-bottom-left-radius: 8px;
+		display: block;
+		padding: 10px 0 9px;
+		background-color: rgba(0,0,0,.2);
+		font-size: 15px;
+		font-weight: 700;
+		line-height: 21px;
+		text-align: center;
+		color: #fff;
+	}
+
+	.payWalletWidgetArea .zpayArea .zpayRefundLink {
+		flex: 1 1;
+		margin-left: 1px;
+	}
+
+	.payWalletWidgetArea  .zpayArea .zpayRefundLink .zpayRefundButton {
+		border-top-right-radius: 8px;
+		border-bottom-right-radius: 8px;
+		display: block;
+		padding: 10px 0 9px;
+		background-color: rgba(0,0,0,.2);
+		font-size: 15px;
+		font-weight: 700;
+		line-height: 21px;
+		text-align: center;
+		color: #fff;
+	}
+	
+	/* -------------------------- zpay_main.jsp 사용 내역 ---------------------- */
+	.zpayHistoryArea {
+/* 		padding: 17px 0; */
+/* 		background-color: #fff; */
+		
+		margin-bottom: 12px;
+		padding: 20px 20px 0 20px;
+		border-radius: 16px;
+		background-color: #fff;
+		box-shadow: 0 4px 16px 0 rgba(0,0,0,.05);
+	}
+	
+	.zpayHistoryArea .noHistory {
+		text-align: center;
+		display: block;
+		padding: 10px 0;
+		font-size: 13px;
+		font-weight: 500;
+		color: #999;
+	}
+	
+	.zpayHistoryArea .zpayHistoryFilter{
+		position: relative;
+		overflow: hidden;
+		overflow-x: auto;
+		-ms-overflow-style: -ms-autohiding-scrollbar;
+		padding: 8px 0;
+		background-color: #fff;
+		box-sizing: border-box;
+		white-space: nowrap;
+	}
+
+	.zpayHistoryArea .zpayHistoryDateSelect{
+		margin-top: 10px;
+		text-align: right;
+		position: relative;
+		padding: 10px 11px;
+		font-size: 15px;
+		font-weight: 500;
+		line-height: 18px;
+		color: #222;
+	}
+		
+	.zpayHistoryArea .zpayHistoryPeriodArea {
+		padding: 15px 0 14px;
+		border-top: 1px solid #999;
+/* 		border-bottom: 1px solid #d0d0d0; */
+		color: #666;
+/* 		font-weight: 500; */
+		line-height: 21px;
+	}
+
+	.zpayHistoryArea .zpayHistoryPeriodArea .listCount {
+		color: #09aa5c;
+		font-weight: 600;
+	}
+
+	.zpayHistoryArea .zpayHistoryPeriodArea .listPeriod {
+		float: right;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea ul {
+		padding: 0;
+/* 		margin: 0 -20px; */
+		list-style: none;
+		position: relative;
+	}
+	
+	.zpayHistoryArea .zpayHistoryListArea li {
+		padding: 0;
+		line-height: 20px;
+		list-style: none;
+		border-top: 1px solid #f0f2f4;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem {
+		position: relative;
+		margin: 0 20px;
+/* 		margin: 0 20px 0 72px; */
+		padding: 20px 0;
+		font-size: 16px;
+		line-height: 22px;
+		color: #222;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_date {
+		float: left;
+		min-width: 52px;
+		padding-right: 16px;
+		font-size: 14px;
+		color: #666;
+		line-height: 22px;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_infoArea {
+		display: flex;
+		overflow: hidden;
+		display: -ms-flexbox;
+		font-size: 16px;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_infoArea .zpayHistoryItem_info {
+		flex: 1 1;
+		-ms-flex: 1 1 0%;
+		overflow: hidden;
+		padding-right: 16px;
+	}
+	
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_infoArea .zpayHistoryItem_info .itemTitle.itemLink {
+		position: relative;
+		padding-right: 9px;
+		box-sizing: border-box;
+		color: #222;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_infoArea .zpayHistoryItem_info .itemTitle {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		display: inline-block;
+		max-width: 100%;
+		font-weight: 700;
+		vertical-align: top;
+	}
+	
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_infoArea .zpayHistoryItem_info_sub {
+		color: #888;
+/* 		font-weight: 500; */
+		font-size: 14px;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_infoArea .zpayHistoryItem_info_sub .payTime {
+		white-space: nowrap;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_infoArea .zpayHistoryItem_info_sub .paymentType {
+		position: relative;
+		margin: 0 9px 0 5px;
+		padding-left: 6px;	
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_amountArea {
+		text-align: right;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_amountArea .zpayHistoryItem_amount {
+		font-size: 16px;
+	}
+
+	.zpayHistoryArea .zpayHistoryListArea li .zpayHistoryItem .zpayHistoryItem_amountArea .zpayBalance {
+		margin-top: 1px;
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 20px;
+		color: #929294;
+	}
+
+	
+@media only screen and (min-width: 768px) {
+	article {
+		margin-top: 84px;
+		min-height: 100%;
+		background-color: #f4f6f8;
+	}
+}
+
+
+/* ============================ zpay_charge_form.jsp ============================= */
+	.chargeContentArea {
+		display: flex;
+		display: -ms-flexbox;
+		flex-direction: column;
+		flex: 1 1;
+		-ms-flex: 1 1 0%;
+		padding: 0 20px 20px;
+		height: 100%;
+		box-sizing: border-box;
+		letter-spacing: -0.5px;
+		/* ------------------------------ */
+		height: 686px;
+		margin-bottom: 12px;
+		padding: 20px;
+/* 		padding: 0 20px; */
+		border-radius: 16px;
+		background-color: #fff;
+		box-shadow: 0 4px 16px 0 rgba(0,0,0,.05);
+	}
+
+	.chargeContentArea .chargeInputArea {
+		margin-top: 20px;
+	}
+
+	.chargeContentArea .chargeInputArea .title {
+		display: table;
+		table-layout: fixed;
+		width: 100%;
+		padding: 12px 0 7px;
+		box-sizing: border-box;
+		line-height: 19px;
+		font-weight: bold;
+		color: #252525;
+		font-size: 20px;
+	}
+
+	.chargeContentArea .chargeInputArea .title .zpay_balance {
+		display: inline-block;
+		font-weight: 700;
+		color: #09aa5c;
+		font-style: normal;
+	}
+
+	.chargeContentArea .chargeInputArea .amountArea {
+		margin-top: 13px;
+	}
+
+	.chargeContentArea .chargeInputArea .amountArea .amountInputArea {
+		display: flex;
+	}	
+
+	.chargeContentArea .chargeInputArea .amountArea input {
+		flex: 1 1;
+		outline: none;
+		display: block;
+		width: 100%;
+		height: calc(1.5em + 0.75rem + 2px);
+		padding: 0.375rem 0.75rem;
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		color: #495057;
+		background-color: #fff;
+		background-clip: padding-box;
+		border: 1px solid #ced4da;
+		border-right: none;
+		border-radius: 0.25rem 0 0 0.25rem;
+		transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	}
+
+	.chargeContentArea .chargeInputArea .amountArea .amountInputArea > button {
+		border: 1px solid #ced4da;
+		border-left: none;
+		border-radius: 0 0.25rem 0.25rem 0;
+		padding-right: 6px;
+		transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	}
+
+	.chargeContentArea .chargeInputArea .amountArea .amountShortcutArea {
+		margin-top: 20px;
+		line-height: 19px;
+	}
+
+	.chargeContentArea .chargeInputArea .amountArea .amountShortcutArea>.btn-group {
+		display: flex;
+	}
+	
+	.chargeContentArea .chargeInputArea .withdrawalAccountArea {
+	    margin-top: 40px;
+	}
+
+	.chargeContentArea .chargeInputArea .withdrawalAccountArea .title {
+		position: relative;
+		padding-right: 120px;
+		line-height: 19px;
+		font-size: 14px;
+		color: #222;
+	}
+	
+	.chargeContentArea .chargeInputArea .withdrawalAccountArea .withdrawalAccount_info {
+		display: block;
+		position: relative;
+		width: 100%;
+/* 		margin-top: 10px; */
+		padding: 18px 35px 18px 17px;
+		border: 1px solid #d9d9d9;
+		border-radius: 6px;
+		box-shadow: 0 2px 6px 0 rgba(122,132,194,.18);
+		font-size: 16px;
+		color: #222;
+		line-height: 19px;
+	}
+	
+	.chargeContentArea .chargeInputArea .withdrawalAccountArea .withdrawalAccount_info .withdrawalBankName {
+		flex: 1 1 auto;
+		-ms-flex: 1 1 auto;
+		display: inline-flex;
+		font-size: 14px;
+		font-weight: 600;
+	}
+
+	.chargeContentArea .chargeInputArea .withdrawalAccountArea .withdrawalAccount_info .withdrawalAccountNum {
+		display: inline-block;
+		flex: 1 0 auto;
+		-ms-flex: 1 0 auto;
+		max-width: 100%;
+		padding-left: 4px;
+		font-size: 14px;
+		font-weight: 600;
+	}
+	
+	.chargeContentArea .chargeInputArea .withdrawalAccountArea button.btn-withdrawalAccount_info {
+		outline: none;
+		border: 0;
+		background-color: transparent;
+		display: flex;
+/* 		display: block; */
+		position: relative;
+		width: 100%;
+/* 		margin-top: 10px; */
+		padding: 18px 35px 18px 17px;
+		border: 1px solid #d9d9d9;
+		border-radius: 6px;
+		box-shadow: 0 2px 6px 0 rgba(122,132,194,.18);
+		font-size: 16px;
+		color: #222;
+		line-height: 19px;
+	}
+
+	.chargeContentArea .chargeInputArea .withdrawalAccountArea button.btn-withdrawalAccount_info .withdrawalBankName{
+/* 		flex: 1 1 auto; */
+/* 		-ms-flex: 1 1 auto; */
+		display: inline-flex;
+		font-size: 14px;
+		font-weight: 600;
+	}
+
+	.chargeContentArea .chargeInputArea .withdrawalAccountArea button.btn-withdrawalAccount_info .withdrawalAccountNum{
+		text-align: left;
+		display: inline-block;
+		flex: 1 0 auto;
+		-ms-flex: 1 0 auto;
+		max-width: 100%;
+		padding-left: 8px;
+		font-size: 14px;
+		font-weight: 600;
+		
+	}
+
+	.chargeContentArea .chargeInputArea .withdrawalAccountArea button.btn-withdrawalAccount_info .moreAccountInfo {
+		display: inline-block;
+/* 		flex: 1 0 auto; */
+/* 		-ms-flex: 1 0 auto; */
+		max-width: 100%;
+		padding-left: 4px;
+/* 		font-size: 14px; */
+		font-weight: bold;
+		color: #999;
+	}
+	
+	.chargeContentArea .chargeButtonArea {
+		margin-top: auto;
+/* 		margin-top: 265px; */
+		padding-top: 30px;
+	}
+	
+	 .myAccountArea {
+		margin-bottom: 12px;
+		padding: 0 20px;
+		border-radius: 16px;
+		background-color: #fff;
+		box-shadow: 0 4px 16px 0 rgba(0,0,0,.05);
+	}
+	
+	.myAccountArea .myAccountListArea ul {
+		padding: 0;
+		list-style: none;
+		position: relative;
+	}
+	
+	.myAccountArea .myAccountListArea li:not(:first-child) {
+		padding: 0;
+		line-height: 20px;
+		list-style: none;
+		border-top: 1px solid #f0f2f4;
+	}
+
+	.myAccountArea .myAccountListArea li a {
+		text-decoration: none;
+	}
+
+	.myAccountArea .myAccountListArea li a:hover {
+		text-decoration: none;
+		color: #222;
+	}
+
+	.myAccountItem {
+		position: relative;
+		margin: 0 20px;
+		padding: 20px 0;
+		font-size: 16px;
+		line-height: 22px;
+		color: #222;
+	}
+
+	.myAccountItem .myAccountItem_infoArea {
+		display: flex;
+		overflow: hidden;
+		display: -ms-flexbox;
+		font-size: 16px;
+	}
+
+	.myAccountItem .myAccountItem_infoArea .myAccountItem_info {
+		flex: 1 1;
+		-ms-flex: 1 1 0%;
+		overflow: hidden;
+		padding-right: 16px;
+	}
+	
+	.myAccountItem .myAccountItem_infoArea .myAccountItem_info_sub {
+		color: #888;
+/* 		font-weight: 500; */
+		font-size: 14px;
+	}
+
+	.myAccountItem .myAccountItem_infoArea .myAccountItem_info_sub .bank_name {
+		white-space: nowrap;
+	}
+
+	.myAccountItem .myAccountItem_infoArea .myAccountItem_info_sub .bank_account {
+		position: relative;
+		margin: 0 9px 0 5px;
+		padding-left: 6px;	
+	}
+	
+	.myAccountItem .myAccountItem_infoArea .moreAccount {
+		flex: 1 1;
+		-ms-flex: 1 1 0%;
+		overflow: hidden;
+		padding-right: 16px;
+		color: #09aa5c;
+	}
+/* ============================ zpay_charge_success.jsp ============================= */
+	
+	.successContentArea {
+		display: flex;
+		display: -ms-flexbox;
+		flex-direction: column;
+		flex: 1 1;
+		-ms-flex: 1 1 0%;
+/* 		padding: 0 20px 20px; */
+		height: 100%;
+		box-sizing: border-box;
+		letter-spacing: -0.5px;
+		margin-bottom: 12px;
+		padding: 20px;
+		border-radius: 16px;
+		background-color: #fff;
+		box-shadow: 0 4px 16px 0 rgba(0,0,0,.05);
+	}
+
+	.successContentArea .targetArea {
+		text-align: center;
+		color: #222;
+	}
+
+	.successContentArea .targetArea .icon {
+		width: 55px;
+		margin: 0 auto;
+		background-color: #fff;
+	}
+
+	.successContentArea .targetArea .targetMessage {
+		color: #1e1e23;
+		margin-top: 15px;
+		font-size: 23px;
+		line-height: 29px;
+	}
+	
+	.successContentArea .targetArea .targetMessage .amount {
+		font-weight: 700;
+		color: #09aa5c;
+		font-style: normal;
+	}
+	
+	.successContentArea .targetArea .targetAccountInfo {
+		margin: 11px 0 -12px;
+		font-size: 14px;
+/* 		font-weight: 500; */
+		color: #666;
+		line-height: 18px;
+	}
+
+	.successContentArea .successInfoArea {
+		margin-top: 30px;
+	}
+
+	.successContentArea .successInfoArea .balanceArea {
+		display: flex;
+		display: -ms-flexbox;
+		padding: 15px 0 15px;
+		border-top: 1px solid #ebedef;
+		line-height: 26px;
+	}
+	
+	.successContentArea .successInfoArea .balanceArea_label, .accountInfoArea_label {
+		font-size: 14px;
+		color: #666;
+	}
+	
+	.successContentArea .successInfoArea .balanceArea_balance {
+		flex: 1 1;
+		-ms-flex: 1 1 0%;
+		font-size: 17px;
+		font-weight: 600;
+		color: #222;
+		text-align: right;
+		color: #09aa5c !important;
+	}
+	
+	.successContentArea .successInfoArea .accountInfoArea {
+		display: flex;
+		border-top-color: #efeff0;
+		border-bottom-color: #ebedef;
+		padding: 12px 0;
+		border: solid #d9d9d9;
+		border-width: 1px 0;
+		font-size: 16px;
+		color: #222;
+		line-height: 26px;
+	}
+	
+	.successContentArea .successInfoArea .accountInfoArea_accountNum {
+		flex: 1 1;
+		-ms-flex: 1 1 0%;
+/* 		font-size: 17px; */
+/* 		font-weight: 600; */
+		color: #222;
+		text-align: right;
+	}
+
+	.successContentArea .successNoticeArea {
+		margin-top: 12px;
+		color: #929294;
+		line-height: 21px;
+		font-size: 12px;
+	}
+
+	.successContentArea .buttonArea {
+		display:flex;
+		margin-top: 254px;
+		padding-top: 30px;
+	}
+
+	.successContentArea .buttonArea .moreCharge {
+		flex: 1 1;
+		margin-right: 5px;
+	}
+	
+	.successContentArea .buttonArea .zpayHistory {
+		flex: 1 1;
+		border-color: #09aa5c;
+		color: #fff;
+		text-shadow: 0 0 2px rgba(0,0,0,.2);
+		background-color: #09aa5c;
+	}
+	
+	
+	
+/* ============================ zpay_passwd_regist.jsp ============================= */
+	#zpay_passwd_check1, #zpay_passwd_check2 {
+		font-size: 14px;
+	}
+	
+	
+	
+/* ============================ zpay_passwd_check_form.jsp ============================= */
+	.changePasswd {
+		margin-top: 14px;
+		color: #929294;
+		line-height: 21px;
+		font-size: 15px;
+	}
+	
+	.changePasswd a:hover {
+		color: #333;
+	}
+	
+	.changePasswdModal {
+		display: flex;
+		display: -ms-flexbox;
+		flex-direction: column;
+		flex: 1 1;
+		-ms-flex: 1 1 0%;
+/* 		padding: 0 20px 20px; */
+		height: 100%;
+		box-sizing: border-box;
+		letter-spacing: -0.5px;
+		margin-bottom: 12px;
+		padding: 20px;
+		border-radius: 16px;
+		background-color: #fff;
+		box-shadow: 0 4px 16px 0 rgba(0,0,0,.05);
+	}
+	
+	.changePasswdModal .changePasswdInputArea .changePasswdArea {
+		margin-top: 13px;
+	}
+
+	.changePasswdModal .changePasswdInputArea .changePasswdArea .inputArea {
+		display: flex;
+	}	
+	
+	.changePasswdModal input {
+		flex: 1 1;
+		outline: none;
+		display: block;
+		width: 100%;
+		height: calc(1.5em + 0.75rem + 2px);
+		padding: 0.375rem 0.75rem;
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		color: #495057;
+		background-color: #fff;
+		background-clip: padding-box;
+		border: 1px solid #ced4da;
+		border-right: none;
+		border-radius: 0.25rem 0 0 0.25rem;
+		transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	}
+
+	.changePasswdModal button {
+		border: 1px solid #ced4da;
+		border-left: none;
+		border-radius: 0 0.25rem 0.25rem 0;
+		padding-right: 6px;
+		transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

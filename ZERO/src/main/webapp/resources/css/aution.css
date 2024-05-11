@@ -1,0 +1,320 @@
+@charset "UTF-8";
+
+/* 자연스러운 스크롤바 이동 */
+/* html {scroll-behavior: smooth;} */
+body{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	min-width: 360px;
+}
+	
+#main{
+	padding: 100px 40px 100px 40px;
+}
+
+#main hr{
+	max-width: 1280px;
+	margin: 10px auto 18px;
+}
+#auctionStatus {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 20px;
+}
+#auctionStatus a {
+	text-decoration: none;
+	color: gray;
+	padding: 10px 0 12.5px;
+	margin: 0 10px;
+}
+#auctionStatus a:hover {
+	text-decoration: none;
+	color: black !important;
+}
+#pageName {
+	color: black !important;
+	font-weight: bold;
+	border-bottom: 3px solid black;
+}
+
+/* 카테고리 클릭 시 표시 */
+#categoryNav span {
+	text-decoration: none;
+	color: gray;
+/* 	padding: 0 10px 10px; */
+	margin: 20px 0 15px 13px;
+	cursor: pointer;
+}
+#categoryNav span:hover{
+	color: black;
+}
+.select {
+	color: black !important;
+	font-weight: bold;
+}
+/* 경매중 페이지 시간 알림박스 */
+.autionNoticeBox {
+	max-width: 1280px;
+	padding: 5px 10px;
+	background-color: #ccc;
+	margin: 1rem auto;
+}
+/* 목록 전체 크기 */
+#listContainer {
+	min-height: 600px;
+}
+/* 2-1. 상품갯수, 검색창, 정렬 */
+.listInfo {
+	margin-top: 25px;
+	display: flex;
+	justify-content: space-between;
+	position: relative;
+}
+.listInfoCount {
+    align-items: center;
+    color: rgba(34,34,34,.8);
+}
+.listInfoBtn {
+	border: none;
+	background-color: white;
+	position: relative;
+	right: 10px;
+}
+.listInfoBtn i {
+	vertical-align: -5px;
+}
+.listSort {
+	overflow: hidden;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    padding: 5px 8px;
+    margin-right: 10px;
+    width: 100px;
+    background-color: #fff;
+    border: 1px solid #ebebeb;
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,.1);
+    z-index: 1;
+    cursor: pointer;
+}
+li, ul {
+	list-style: none;
+}
+.listSort>li:hover {
+	background-color: #ccc;
+}
+.listSort li {
+	position: relative;
+}
+.listSort li>i {
+	font-size: 12px;
+	vertical-align: 1px;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+/* 상품목록 부분 */
+.productListArea {
+	margin-left: auto;
+    margin-right: auto;
+	margin-top: 25px;
+	max-width: 1280px;
+	padding-left: 16px;
+    padding-right: 16px;
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    grid-row-gap: 16px;
+    row-gap: 40px;
+    grid-column-gap: 10px;
+    -webkit-column-gap: 10px;
+    -moz-column-gap: 10px;
+    column-gap: 10px;
+}
+
+.product_card_wrap {
+	max-width: 240px;
+}
+/* 상품카드 하나 */
+.product_card {
+	display: inline-block;
+	max-width: 100%;
+}
+.product_card img {
+	display: block;
+	margin: auto;
+	border-radius: 10px;
+	height: 230px;
+	width: 230px;
+	object-fit: cover;
+}
+.item_title, .autionTime {
+	margin-bottom: 8px;
+}
+.product_info_brand {
+	margin: 5px 0 5px 0;
+	font-weight: bold;
+	font-size: 13px;
+}
+.product_info_name, .autionTime {
+	font-size: 12px;
+}
+.product_info_name {
+	line-height: 16px;
+/* 	vertical-align: middle; */
+	display: flex;
+/* 	align-items: center; */
+	height: 32px;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+/*     display: -webkit-box; */
+    -webkit-line-clamp: 2; /* 두 줄까지는 보이게 */
+    -webkit-box-orient: vertical;
+/*  	white-space: nowrap; 영역보다 커도 줄 바꿈하지마라 */
+}
+
+.item_inner {
+	/* 하이퍼링크 색상 삭제 */
+	text-decoration: none;
+	color: inherit;
+} 
+.item_inner:hover {
+	text-decoration: none;
+	color: inherit;
+	font-weight: bold;
+} 
+.autionTime span {
+	color: red;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.row div {
+	padding: 0 5px 0 0;
+	line-height: 25px;
+}
+.price {
+	display: flex;
+	justify-content: center;
+	text-align: center;
+	font-size: 11px;
+	color: gray;
+}
+.colRight{
+	font-size: 14px;
+	color: black;
+	text-align: right;
+}
+
+/* 경매중, 경매종료 */
+.applyInfo {
+	display: flex;
+	justify-content: center;
+	margin: 5px 10px;
+}
+.applyInfo>span {
+/* 	vertical-align: middle; */
+	padding: 3px 10px 0 0;
+}
+/* 입찰 예정(버튼도 같이 정렬) */
+.applyInfos {
+	display: flex;
+	justify-content: space-between;
+	margin: 5px 10px;
+}
+
+.person span {
+	vertical-align: middle;
+	font-size: 14px;
+}
+.person>i {
+	vertical-align: middle;
+	font-size: 30px;
+	color: skyblue
+}
+
+/* 옥션 상품이 없을 때 안내 */
+.auctionNotice {
+	height: 400px;
+	display: flex;
+  	justify-content: center;
+  	align-items: center;
+}
+.noticeMsg {
+	color: gray;
+	display: inline-block;
+	text-align: center;
+}
+
+/* aution_list_present.jsp css */
+/* 경매 안내 배너 */
+.autionNoticeBox {
+	background-image: url('../img/texture.jpg');
+	height: 100%;
+	background-position: center;
+	background-size: cover;
+	color: white;
+/* 	font-family: "Courier New", Courier, monospace; */
+}
+#demo {
+		text-align: center;
+		font-size: 60px;
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+	}
+.noticeDate{
+	margin: 1em;
+	font-size: 16px;
+	text-align: center;
+}
+
+/* ----------------------------------------------------------------------------------------------------------------- */
+@media only screen and (max-width: 768px) {	
+	#main{
+		padding: 0 15px 20px 15px;
+		box-sizing: border-box;
+		min-width: 360px;
+	}
+	
+	.productListArea{
+		margin-left: auto;
+    	margin-right: auto;
+		padding: 0 40px;
+		margin-top: 15px;
+		max-width: 95vw;
+		padding-left: 16px;
+	    padding-right: 16px;
+	    display: grid;
+	    grid-template-columns: repeat(2,minmax(0,1fr));
+	    grid-row-gap: 16px;
+	    row-gap: 16px;
+	    grid-column-gap: 10px;
+	    -webkit-column-gap: 10px;
+	    -moz-column-gap: 10px;
+	    column-gap: 10px;
+	}
+	
+	.product_card_wrap {
+		max-width: 210px;
+	}
+	.product_card img {
+		display: block;
+		margin: auto;
+		border-radius: 10px;
+		height: 40vw;
+		width: 40vw;
+		object-fit: cover;
+	}
+	
+	/* aution_list_present.jsp css */
+	/* 경매 안내 배너 */
+	.autionNoticeBox {
+/* 		margin: 1rem auto; */
+	}
+	
+	.noticeDate {
+		display: none;
+	}
+	
+}

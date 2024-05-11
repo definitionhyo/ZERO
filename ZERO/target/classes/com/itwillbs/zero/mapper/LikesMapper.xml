@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.zero.mapper.LikesMapper">
+
+	<insert id="addLike" parameterType="map">
+        INSERT 
+        	INTO 
+	        	LIKES (
+	        		member_id
+	        		, secondhand_idx)
+        	VALUES (
+        		#{member_id}
+        		, #{secondhand_idx})
+    </insert>
+
+    <delete id="cancelLike" parameterType="map">
+        DELETE 
+        	FROM 
+        		LIKES
+        WHERE 
+        	member_id = #{member_id} 
+       	AND 
+       		secondhand_idx = #{secondhand_idx}
+    </delete>
+
+    <select id="getLikeStatus" parameterType="map" resultType="int">
+        SELECT 
+        	COUNT(*)
+        FROM 
+        	LIKES
+        WHERE 
+        	member_id = #{member_id} 
+       	AND 
+      		secondhand_idx = #{secondhand_idx}
+    </select>
+	
+</mapper>

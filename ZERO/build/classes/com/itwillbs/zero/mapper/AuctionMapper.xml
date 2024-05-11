@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.zero.mapper.AuctionMapper">
+	
+	<!-- 입찰 예정 목록 조회 - SELECT -->
+	<!-- 카테고리별, 정렬별 조회 -->
+	<select id="selectPreAuctionList" resultType="Hashmap">
+		SELECT 
+			auction_idx
+			, brand_name
+			, auction_title
+			, auction_image1
+			, auction_manage_check_date
+<!-- 			, CONCAT( DATE(auction_manage_check_date), " ", TIME(auction_manage_check_date) ) AS check_date -->
+			, auction_start_datetime
+			, auction_start_price
+			, auction_max_price
+			, category_idx
+			, auction_log_count
+			FROM 
+				AUCTION_PREPARE_LIST
+			<!-- 카테고리별 or 정렬별 조회할 WHERE 절, ORDER BY 절 수행, 아니면 생략 -->
+			<if test="!category.equals('')"> <!-- !searchKeyword.equals('') == searchKeyword neq '' -->
+			<!-- 카테고리(category_idx)에 따른 WHERE 절 조건 대상 변경 -->
+				<choose>
+					<when test="category.equals('럭셔리')">
+						WHERE category_idx = 6
+					</when>
+					<when test="category.equals('테크')">
+						WHERE category_idx = 7
+					</when>
+					<when test="category.equals('한정판')">
+						WHERE category_idx = 8
+					</when>
+				</choose>
+			</if>
+			
+			<if test="!sort.equals('')"> <!-- !searchKeyword.equals('') == searchKeyword neq '' -->
+				<choose>
+					<when test="sort.equals('인기순')">
+						ORDER BY auction_log_count DESC
+					</when>
+					<when test="sort.equals('가격순')">
+						ORDER BY auction_start_price DESC
+					</when>
+					<when test="sort.equals('최신순')">
+<!-- 						ORDER BY auction_start_datetime DESC -->
+						ORDER BY auction_start_datetime
+					</when>
+				</choose>
+			</if>
+				LIMIT 
+					#{startRow} 
+					, #{listLimit}
+	</select>
+	
+	<!-- 경매중 목록 조회 - SELECT -->
+	<!-- 카테고리별, 정렬별 조회 -->
+	<select id="selectNowAuctionList" resultType="Hashmap">
+		SELECT
+			auction_idx
+			, brand_name
+			, auction_image1
+			, auction_title
+			, auction_now_price
+			, auction_max_price
+			, category_idx
+			, auction_log_count
+			FROM
+				AUCTION_PRESENT_LIST
+				<choose>
+					<when test="category.equals('럭셔리')">
+						WHERE category_idx = 6
+					</when>
+					<when test="category.equals('테크')">
+						WHERE category_idx = 7
+					</when>
+					<when test="category.equals('한정판')">
+						WHERE category_idx = 8
+					</when>
+				</choose>
+				<choose>
+					<when test="sort.equals('인기순')">
+						ORDER BY auction_log_count DESC
+					</when>
+					<when test="sort.equals('가격순')">
+						ORDER BY auction_now_price DESC
+					</when>
+					<when test="sort.equals('최신순')">
+						ORDER BY auction_manage_check_date DESC
+					</when>
+				</choose>
+				LIMIT 
+					#{startRow} 
+					, #{listLimit}
+	</select>
+	
+	<!-- 경매종료 목록 조회 - SELECT -->
+	<!-- 카테고리별, 정렬별 조회 -->
+	<select id="selectEndAuctionList" resultType="Hashmap">
+		SELECT
+			auction_idx
+		    , brand_name
+		    , auction_image1
+		    , auction_title
+		    , auction_manage_check_date
+		    , IFNULL(auction_final_price, 0) AS auction_final_price
+		    , auction_final_datetime
+		    , auction_max_price
+		    , category_idx
+		    , auction_log_count
+		    , auction_apply_count
+		    , IF(auction_apply_count = 0, '낙찰실패', '낙찰') AS auction_issuccess
+			FROM
+				AUCTION_END_LIST
+				<choose>
+					<when test="category.equals('럭셔리')">
+						WHERE category_idx = 6
+					</when>
+					<when test="category.equals('테크')">
+						WHERE category_idx = 7
+					</when>
+					<when test="category.equals('한정판')">
+						WHERE category_idx = 8
+					</when>
+				</choose>
+				<choose>
+					<when test="sort.equals('인기순')">
+						ORDER BY auction_log_count DESC
+					</when>
+					<when test="sort.equals('가격순')">
+						ORDER BY auction_final_price DESC
+					</when>
+					<when test="sort.equals('최신순')">
+						ORDER BY auction_final_datetime DESC
+					</when>
+				</choose>
+				LIMIT 
+					#{startRow} 
+					, #{listLimit}
+	</select>
+	
+	<!-- 전체 상품 갯수 계산 -->
+	<select id="selectGetAuctionListCount" resultType="int">
+		SELECT
+			COUNT(*)
+			FROM
+				<!-- 페이지별 갯수 조회(각자 뷰 사용) -->
+				<choose>
+					<when test="type.equals('입찰예정')">
+						AUCTION_PREPARE_LIST
+					</when>
+					<when test="type.equals('경매중')">
+						AUCTION_PRESENT_LIST
+					</when>
+					<when test="type.equals('경매종료')">
+						AUCTION_END_LIST
+					</when>
+				</choose>
+				
+			<if test="!category.equals('')"> <!-- !searchKeyword.equals('') == searchKeyword neq '' -->
+			<!-- 2. 카테고리(category_idx)에 따른 WHERE 절 조건 대상 변경 -->
+				<choose>
+					<when test="category.equals('럭셔리')">
+						WHERE category_idx = 6
+					</when>
+					<when test="category.equals('테크')">
+						WHERE category_idx = 7
+					</when>
+					<when test="category.equals('한정판')">
+						WHERE category_idx = 8
+					</when>
+				</choose>
+			</if>
+	</select>
+	
+	
+	<!-- 검색시 옥션 목록 조회 -->
+	<select id="selectAuctionList" resultType="hashmap">
+		SELECT *
+		FROM 
+			AUCTION_PRODUCT_CATEGORY_BRAND
+		WHERE
+			<if test="!productSearchKeyword.equals('')">
+        		auction_title LIKE '%${productSearchKeyword}%'
+     		</if>
+	</select>
+	
+	
+	<!-- 검색시 옥션 목록 개수 조회 -->
+	<select id="selectAuctionCount" resultType="int">
+		SELECT COUNT(*)
+		FROM 
+			AUCTION_PRODUCT_CATEGORY
+		WHERE
+			<if test="!productSearchKeyword.equals('')">
+        		auction_title LIKE '%${productSearchKeyword}%'
+     		</if>
+	</select>
+	
+	<!-- 경매에 참여한 결과가 있는지 확인 - 정의효 -->
+	<select id="getPartAuction" resultType="map">
+		WITH CTE AS (
+		  SELECT member_id, AUCTION_IDX, COUNT(*) as count
+		  FROM AUCTION_LOG_ROOM
+		  WHERE member_id = #{member_id}
+		  GROUP BY member_id, AUCTION_LOG_IDX
+		)
+		SELECT A.*
+		FROM AUCTION_PRESENT_LIST A
+		JOIN (
+		  SELECT * 
+		  FROM CTE
+		  WHERE count = 1
+		  GROUP BY member_id, AUCTION_IDX
+		) B ON A.auction_idx = B.AUCTION_IDX;
+	</select>
+	
+	<!-- 낙찰받은 경매물품이 있는지 확인 - 정의효 -->
+	<select id="getSuccessBid" resultType="map">
+		SELECT 
+		    AUCTION_LOG_ROOM.*,
+		    AUCTION_END_LIST.*
+		FROM 
+		    AUCTION_END_LIST 
+		JOIN
+		    AUCTION_LOG_ROOM 
+		    ON
+		    AUCTION_LOG_ROOM.auction_idx  = AUCTION_END_LIST.auction_idx
+		WHERE 
+		    AUCTION_LOG_ROOM.auction_log_bid = AUCTION_END_LIST.auction_final_price
+		    AND AUCTION_LOG_ROOM.member_id = #{member_id}
+		
+		
+	</select>
+	
+</mapper>

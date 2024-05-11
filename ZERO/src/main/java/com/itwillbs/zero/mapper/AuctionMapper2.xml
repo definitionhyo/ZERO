@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.zero.mapper.AuctionMapper2">
+	<select id="selectCategoryList" resultType="hashmap">
+		SELECT * FROM CATEGORY
+		WHERE category_type = '경매'
+	</select>
+	
+	<select id="selectBrandList" resultType="hashmap">
+		SELECT * FROM BRAND
+	</select>
+
+	<insert id="insertProduct" >
+	<selectKey keyProperty="auction_idx" resultType="int" order="AFTER">
+			SELECT MAX(auction_idx)
+				FROM AUCTION_PRODUCT
+				
+	</selectKey>
+		INSERT
+			INTO AUCTION_PRODUCT
+			VALUES (
+				null 
+				, #{auction_title} 
+				, #{auction_start_price} 
+				, #{category_idx} 
+				, #{auction_product_status}  
+				, #{auction_max_price} 
+				, #{auction_content} 
+				, #{board_file1}   
+				, #{board_file2}   
+				, #{board_file3}   
+				, now()
+				, #{brand_idx} 
+				, #{auction_seller_id} 
+				, #{auction_seller_address} 
+				, #{auction_seller_address_detail} 
+			)
+	</insert>
+	
+	<insert id="insertAuctionManaging" >
+	
+		INSERT 
+		INTO AUCTION_MANAGING
+		(auction_managing_idx, auction_idx, auction_manage_check_status,member_id)
+		values(
+			null
+			,#{auction_idx}
+			,'등록'
+			,null
+			)
+	</insert>
+	
+	<select id="selectAuctionProduct" resultType="hashmap">
+		SELECT *FROM AUCTION_PRODUCT ap  JOIN AUCTION_MANAGING am 
+		ON ap.auction_idx = am.auction_idx
+		WHERE ap.auction_idx=#{id}
+	</select>
+
+	<insert id="insertLog" >
+	
+		INSERT 
+		INTO AUCTION_LOG_ROOM
+		values(
+			null
+			, #{auction_log_bid}
+			, now()
+			, #{member_id}
+			, #{auction_idx}
+			)
+	</insert>
+	<select id="selectAuctionLog" resultType="hashmap">
+		SELECT *from AUCTION_LOG_ROOM
+		WHERE auction_idx=#{id}
+		ORDER BY auction_log_bid
+	</select>
+
+	
+	<select id="selectMaxPrice" resultType="int">
+		SELECT IFNULL(max(auction_log_bid),0) FROM AUCTION_LOG_ROOM
+		WHERE auction_idx=#{auction_idx}
+	</select>
+	
+	<update id="updateEnd" >
+		UPDATE AUCTION_MANAGING SET auction_manage_status='경매종료' WHERE auction_end_datetime =#{now}  
+	</update>
+	
+	<select id="selectWinnerList" resultType="hashmap">
+		SELECT a.auction_idx, a.max_bid, b.member_id, ap.auction_seller_id FROM
+		  (SELECT auction_idx, MAX(auction_log_bid) as max_bid
+		   FROM AUCTION_LOG_ROOM
+		   GROUP BY auction_idx) as a
+		JOIN AUCTION_LOG_ROOM as b
+		  ON a.auction_idx = b.auction_idx AND a.max_bid = b.auction_log_bid
+		JOIN AUCTION_MANAGING as am
+		  ON a.auction_idx = am.auction_idx
+		JOIN AUCTION_PRODUCT as ap
+ 		  ON a.auction_idx = ap.auction_idx
+		WHERE auction_end_datetime =#{now} AND am.member_id IS NULL
+	</select>
+	
+	<update id="updateWinner" >
+		UPDATE AUCTION_MANAGING SET auction_manage_status='경매종료', member_id =#{member_id} WHERE auction_idx =#{auction_idx} 
+	</update>
+	
+	<select id="selectBidedZpay" resultType="int">
+		SELECT IFNULL(SUM(max_bid), 0)
+		FROM (
+		    SELECT MAX(al.auction_log_bid) AS max_bid
+		    FROM AUCTION_LOG_ROOM al
+		    JOIN AUCTION_MANAGING am ON al.auction_idx = am.auction_idx
+		    WHERE al.member_id = #{member_id} AND al.auction_idx != #{id}
+		    AND DATE(al.auction_log_datetime) = CURDATE()
+		    AND am.auction_manage_status IS  null
+		    GROUP BY al.auction_idx
+		) as t
+	</select>
+
+	<select id="selectAllBidedZpay" resultType="int">
+		SELECT IFNULL(SUM(max_bid),0)
+		FROM (
+		  SELECT MAX(auction_log_bid) AS max_bid
+		  FROM AUCTION_LOG_ROOM
+		  WHERE member_id = #{member_id}
+		  AND DATE(auction_log_datetime) = CURDATE()
+		  GROUP BY auction_idx
+		)as t
+	</select>
+	
+	<insert id="insertOrder" >
+		INSERT 
+		INTO ORDER_AUCTION
+		values(
+			null
+			, CONCAT(DATE_ADD(CURDATE(), INTERVAL 1 DAY), ' 07:00:00')
+			, #{auction_max_price}
+			, 13245
+			, #{order_auction_commission}
+			, "한진택배"
+			, #{auction_seller_id}
+			, #{member_id}
+			, #{auction_idx}
+			
+			)
+	</insert>
+	
+	<select id="selectoOderauctionIdx" resultType="int">
+			SELECT order_auction_idx
+				FROM ORDER_AUCTION
+				WHERE auction_idx=#{id}
+				
+	</select>
+	<select id="selectAuctionIdx" resultType="int">
+			SELECT  MAX(auction_idx) FROM AUCTION_PRODUCT;
+				
+	</select>
+
+	<select id="selectSellerInfo" resultType="hashmap">
+			SELECT * FROM MEMBER
+			WHERE member_id = #{member_id}
+				
+	</select>
+	
+	<insert id="insertOrder2" >
+		INSERT 
+		INTO ORDER_AUCTION
+		values(
+			null
+			, ADDTIME(CURDATE(), '07:00:00')
+			, #{max_bid}
+			, 13245
+			, #{max_bid} * 0.1
+			, "한진택배"
+			, #{auction_seller_id}
+			, #{member_id}
+			, #{auction_idx}
+			
+			)
+	</insert>
+	
+</mapper>

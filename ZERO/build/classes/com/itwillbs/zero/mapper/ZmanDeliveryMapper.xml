@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.zero.mapper.ZmanDeliveryMapper">
+
+	<!-- 배달 예정 목록 조회 - SELECT -->
+	<!-- 중고물품 오더 테이블과 JOIN 필요 -->
+	<select id="selectDeliveryYetList" resultType="com.itwillbs.zero.vo.ZmanDeliveryVO">
+		SELECT
+			zd.*, os.order_secondhand_product
+		FROM
+			ZMAN_DELIVERY zd 
+		JOIN
+			ORDER_SECONDHAND os
+			ON 
+				zd.order_secondhand_idx = os.order_secondhand_idx
+		WHERE zman_delivery_status = "배달 예정"
+	</select>
+	
+	<!-- ZMAN 배달 출발지 리스트 가져오기 -SELECT -->
+	<select id="selectDeliveryStartspotList" resultType="com.itwillbs.zero.vo.ZmanDeliveryVO">
+		SELECT
+			zman_delivery_startspot
+			FROM
+				ZMAN_DELIVERY
+	</select>
+	
+	<!-- 마커 클릭 시 보여줄 정보 가져오기 -->
+	<select id="selectMarkerClickInfo" resultType="com.itwillbs.zero.vo.ZmanDeliveryVO">
+		SELECT
+			*
+			FROM
+				ZMAN_DELIVERY
+	</select>
+	
+	<!-- DB 에 저장된 출발지와 도착지 가져오기 - 파라미터 zman_delivery_idx -->
+	<select id="selectDeliveryLocation" resultType="com.itwillbs.zero.vo.ZmanDeliveryVO">
+		SELECT *
+			FROM ZMAN_DELIVERY
+			JOIN 
+			WHERE zman_delivery_idx = #{zman_delivery_idx};
+	</select>
+	
+	<!-- ZMAN 중고물품 오더 배달 수락하기 - UPDATE -->
+	<update id="updateDelivery">
+		UPDATE 
+			ZMAN_DELIVERY 
+			SET 
+				zman_delivery_accepttime = now()
+				, zman_delivery_status = '배달 수락'
+				, zman_id = #{zman_id}
+			WHERE
+				zman_delivery_idx = #{zman_delivery_idx};
+	</update>
+	
+	<!-- 배달 상세 정보 - 출발지와 배달지 가져오기 - SELECT -->
+	<select id="selectDeliveryDetail" resultType="com.itwillbs.zero.vo.ZmanDeliveryVO">
+			SELECT 
+				zd.*, os.order_secondhand_product 
+				FROM 
+					ZMAN_DELIVERY zd
+				JOIN
+					ORDER_SECONDHAND os
+				ON 
+					zd.order_secondhand_idx  = os.order_secondhand_idx 
+				WHERE 
+					zd.zman_delivery_idx = #{zman_delivery_idx};
+	</select>
+	
+
+	<!-- ZMAN zman_delivery_status "배달 시작" 로 변경하기 -->
+	<update id="updateDeliveryDetail">
+		UPDATE 
+			ZMAN_DELIVERY 
+			SET 
+				zman_delivery_starttime = now()
+				, zman_delivery_status = '배달 시작'
+			WHERE
+				zman_delivery_idx = #{zman_delivery_idx};
+	</update>
+	
+	<!-- ZMAN zman_delivery_status "배달 완료" 로 변경하기 -->
+	<update id="updateDeliveryEnd">
+		UPDATE 
+			ZMAN_DELIVERY 
+			SET 
+				zman_delivery_endtime = now()
+				, zman_delivery_status = '배달 완료'
+			WHERE
+				zman_delivery_idx = #{zman_delivery_idx};
+	</update>
+	
+	<!-- 배달 완료 버튼 클릭 시 정산 내역 테이블 INSERT -->
+	<insert id="insertDeliveryDone">
+	    INSERT INTO ZMAN_EARNING (
+	        zman_earning_idx
+	        , zman_delivery_commission
+	        , zman_delivery_idx
+	        , zman_id
+	        , zman_net_profit
+	    )
+	    VALUES (
+		        null
+		        , #{zman_delivery_commission}
+		        , #{zman_delivery_idx}
+		        , #{zman_id}
+		        , 2000
+		    )
+	</insert>
+	
+	<!-- ZMAN 배달 완료 내역 페이지로 이동 -->
+	<select id="selectDeliveryDoneList" resultType="com.itwillbs.zero.vo.ZmanDeliveryVO">
+		SELECT
+			zd.*, os.order_secondhand_product
+		FROM
+			ZMAN_DELIVERY zd 
+		JOIN
+			ORDER_SECONDHAND os
+			ON 
+				zd.order_secondhand_idx = os.order_secondhand_idx
+		WHERE zman_delivery_status = "배달 완료"
+		AND zman_id = #{zman_id}
+	</select>
+	
+	<!-- 배달 완료 상세 페이지 - 정산 완료인지 확인하기 -->
+	<select id="selectEaningRefundIdx">
+		SELECT * 
+			FROM
+				ZMAN_EARNING ze 
+			JOIN
+				ZMAN_REFUND_HISTORY zrh 
+			ON
+				ze.zman_earning_idx  = zrh.zman_earning_idx
+			WHERE
+				zman_delivery_idx = #{zmanDeliveryIdx};
+	</select>
+
+	<!-- 배달 완료 페이지에서 정산하기 버튼 으로 파라미터 넘겨주기 -->
+	<select id="selectZmanEarningIdx" resultType="com.itwillbs.zero.vo.ZmanEarningVO">
+		SELECT *
+		FROM 
+			ZMAN_EARNING
+		WHERE
+			zman_delivery_idx = #{zmanDeliveryIdx};
+	</select>
+
+	<!-- 정산 내역 페이지 AJAX 데이터 가져오기 -->
+	<select id="selectZmanEarningList" resultType="map">
+		SELECT * 
+		FROM 
+			ZMAN_EARNING ze 
+		JOIN
+			ZMAN_REFUND_HISTORY zrh 
+		ON
+			ze.zman_earning_idx = zrh.zman_earning_idx
+		WHERE ze.zman_id = #{zman_id};
+	</select>
+
+	<!--  -->
+	<select id="selectZpay" resultType="com.itwillbs.zero.vo.ZpayVO">
+		SELECT *
+			FROM ZPAY
+			WHERE member_id = #{member_id}
+	</select>
+</mapper>

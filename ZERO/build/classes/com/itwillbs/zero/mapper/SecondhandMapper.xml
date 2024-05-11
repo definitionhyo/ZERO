@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.zero.mapper.SecondhandMapper">
+
+	<!-- 중고 카테고리 리스트 조회 작업 -->
+	<select id="selectCategoryList" resultType="hashmap">
+		SELECT * 
+		FROM 
+			CATEGORY
+		WHERE 
+			category_type = '중고'
+	</select>
+	
+	
+	<!-- 중고 상품 등록 작업  -->
+	<insert id="insertProduct">
+
+		INSERT INTO 
+			SECONDHAND	
+		VALUES (
+			null 								-- secondhand_idx		 	
+			, #{secondhand_price}
+			, #{secondhand_subject}
+			, #{secondhand_content}
+			, #{secondhand_deliveryType_ptp}
+			, #{secondhand_paymentType_ptp}
+			, #{secondhand_image1}
+			, #{secondhand_image2}
+			, #{secondhand_image3}
+			, now()								-- 작성일
+			, null 								-- update date
+			, 0									-- read count(조회수)
+			, secondhand_idx + 1				-- re_ref
+			, '판매중'							-- deal_status(default 거래중?)
+			, #{member_id}	 					-- 작성자
+			, #{category_idx}
+			, #{secondhand_deliveryType_parcel}
+			, #{secondhand_deliveryType_zstation}
+			, #{secondhand_deliveryType_zman}
+			, #{secondhand_paymentType_zpay}
+			)
+	</insert>
+	
+	<!-- 중고상품 목록 조회작업 -->
+	<!-- 해당카테고리 조회 작업으로 뷰 생성 SECONDHAND_CATEGORY -->
+	<select id="selectSecondhandList" resultType="com.itwillbs.zero.vo.SecondhandVO">
+		SELECT
+			*
+		FROM
+			SECONDHAND_CATEGORY
+		ORDER BY
+			secondhand_first_date DESC 
+<!-- 		LIMIT -->
+<!-- 			#{startRow} -->
+<!-- 			,#{listLimit} -->
+	</select>
+	
+	<!-- 중고상품 목록 개수 조회작업(페이징) -->
+	<select id="selectSecondhandListCount" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM 
+			SECONDHAND
+	</select>
+	
+	
+	<!-- 중고상품목록 정렬변경시 변경된정렬로 목록 조회작업 selectChangedSecondhandList -->
+	<select id="selectChangedSecondhandList" resultType="Hashmap">
+		SELECT 
+			*
+			FROM 
+				SECONDHAND_CATEGORY
+			<!-- 카테고리별 or 정렬별 조회할 WHERE 절, ORDER BY 절 수행, 아니면 생략 -->
+			<if test="!category.equals('')">
+			<!-- 카테고리(category_idx)에 따른 WHERE 절 조건 대상 변경 -->
+				<choose>
+					<when test="category.equals('패션의류/신발/잡화/뷰티/미용')">
+						WHERE category_name = '패션의류/신발/잡화/뷰티/미용'
+					</when>
+					<when test="category.equals('유아동/유아장난감/유아의류/유아용품')">
+						WHERE category_name = '유아동/유아장난감/유아의류/유아용품'
+					</when>
+					<when test="category.equals('반려동물/반려동물용품')">
+						WHERE category_name = '반려동물/반려동물용품'
+					</when>
+					<when test="category.equals('도서/문구/게임/취미/쿠폰')">
+						WHERE category_name = '도서/문구/게임/취미/쿠폰'
+					</when>
+					<when test="category.equals('모바일/태블릿/전자악세사리/가전제품')">
+						WHERE category_name = '모바일/태블릿/전자악세사리/가전제품'
+					</when>
+				</choose>
+			</if>
+			
+<!-- 			거래가능상품만 보기 체크박스 클릭시 --> 
+<!-- 			체크박스해제시 전체페이지 돌아감 -->
+<!-- 			<if test=""> -->
+<!-- 				<when test="type.equals('거래중')"> -->
+<!-- 						AUCTION_PREPARE_LIST -->
+<!-- 				</when> -->
+<!-- 			</if> -->
+			
+			
+			<if test="!sort.equals('')"> 
+				<choose>
+					<when test="sort.equals('최신순')">
+						ORDER BY secondhand_first_date DESC 
+					</when>
+					<when test="sort.equals('가격순')">
+						ORDER BY secondhand_price ASC
+					</when>
+					<!-- 찜하기구현전이라 임의설정 - 조회순 많은순 정렬 -->
+					<when test="sort.equals('인기순')">
+						ORDER BY secondhand_readcount DESC 
+					</when>
+				</choose>
+			</if>
+				LIMIT 
+					#{startRow} 
+					, #{listLimit}
+	</select>
+	
+	
+	<!-- 중고상품목록 정렬변경시 변경된정렬 목록 개수 조회작업 selectChangedSecondhandListCount -->
+	
+		<select id="selectChangedSecondhandListCount" resultType="int">
+		SELECT 
+			COUNT(*)
+			FROM 
+				SECONDHAND_CATEGORY
+			<!-- 카테고리별 or 정렬별 조회할 WHERE 절, ORDER BY 절 수행, 아니면 생략 -->
+			<if test="!category.equals('')">
+			<!-- 카테고리(category_idx)에 따른 WHERE 절 조건 대상 변경 -->
+				<choose>
+					<when test="category.equals('패션의류/신발/잡화/뷰티/미용')">
+						WHERE category_name = '패션의류/신발/잡화/뷰티/미용'
+					</when>
+					<when test="category.equals('유아동/유아장난감/유아의류/유아용품')">
+						WHERE category_name = '유아동/유아장난감/유아의류/유아용품'
+					</when>
+					<when test="category.equals('도서/문구/게임/취미/쿠폰')">
+						WHERE category_name = '도서/문구/게임/취미/쿠폰'
+					</when>
+					<when test="category.equals('반려동물/반려동물용품')">
+						WHERE category_name = '반려동물/반려동물용품'
+					</when>
+					<when test="category.equals('모바일/태블릿/전자악세사리/가전제품')">
+						WHERE category_name = '모바일/태블릿/전자악세사리/가전제품'
+					</when>
+				</choose>
+			</if>
+			
+			
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 중고상품 상세페이지 - 상품상세정보 조회작업 -->	
+	<select id="selectProduct" resultType="com.itwillbs.zero.vo.SecondhandVO">
+		SELECT *
+		FROM
+			SECONDHAND_CATEGORY
+		WHERE
+			secondhand_idx = #{secondhand_idx}
+	</select>
+	
+	
+	<!-- 중고상품 상세페이지 - 판매자 정보 조회  -->
+	<!-- 필요정보 : 판매자 프로필이미지, 닉네임, 주소, 등 -->
+	<!-- 판매중 상품의 개수????? 는 따로-->
+	<select id="selectSellerInfo" resultType="hashmap">
+		SELECT *
+		FROM 
+			MEMBER m
+		JOIN
+			SECONDHAND s
+		ON 
+			m.member_id = s.member_id
+		WHERE
+			s.member_id = #{member_id}
+			AND secondhand_idx = #{secondhand_idx}
+	</select>
+	
+	
+	<!-- 판매자의 판매상품 총 개수 조회 -->
+	<select id="selectSellerProductCount" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM 
+			SECONDHAND
+		WHERE 
+			member_id = #{member_id}
+	</select>
+
+
+	<!-- 판매자의 판매 물품 리스트 조회 -->
+	<select id="selectSellerProductList" resultType="hashmap">
+		SELECT *
+		FROM 
+			MEMBER m
+		JOIN
+			SECONDHAND s
+		ON 
+			m.member_id = s.member_id
+		WHERE
+			s.member_id = #{member_id}
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 판매자페이지 - 판매자 정보 조회요청 -->
+	<select id="selectSellerInfo_sellerPage" resultType="com.itwillbs.zero.vo.MemberVO">
+		SELECT *
+		FROM MEMBER
+		WHERE 
+			member_id = #{member_id}
+	</select>
+
+
+	<!-- 판매자페이지 - 거래중인 판매자의 상품 목록 조회요청 -->
+	<select id="selectDealProductList" resultType="hashmap">
+		SELECT *
+		FROM SECONDHAND
+		WHERE 
+			member_id = #{member_id}
+			AND (secondhand_deal_status = '판매중' OR secondhand_deal_status = '예약중')
+	</select>
+	<!-- 판매자페이지 - 거래완료된 판매자의 상품 목록 조회요청 -->
+	<select id="selectSoldoutProductList" resultType="hashmap">
+		SELECT *
+		FROM SECONDHAND
+		WHERE 
+			member_id = #{member_id}
+			AND (secondhand_deal_status = '판매완료')
+	</select>
+	
+	
+	<!-- 판매자페이지 - 거래중인 판매자의 상품 개수 조회요청 -->
+	<select id="selectDealProductCount" resultType="int">
+		SELECT COUNT(*)
+		FROM SECONDHAND
+		WHERE 
+			member_id = #{member_id}
+			AND (secondhand_deal_status = '판매중' OR '예약중')
+	</select>
+	<!-- 판매자페이지 - 거래완료된 판매자의 상품 개수 조회요청 -->
+	<select id="selectSoldOutProductCount" resultType="int">
+		SELECT COUNT(*)
+		FROM SECONDHAND
+		WHERE 
+			member_id = #{member_id}
+			AND (secondhand_deal_status = '판매완료')
+	</select>
+
+
+	<!-- 판매자페이지 - 리뷰 리스트 조회작업 selectReviewList  -->
+	<select id="selectReviewList" resultType="hashmap">
+		SELECT *
+		FROM 
+			SELLER_REVIEW
+		WHERE 
+			review_reader_id = #{member_id}
+	</select>
+	<!-- 판매자페이지 - 리뷰 리스트 개수 조회작업 selectReviewCount  -->
+	<select id="selectReviewCount" resultType="int">
+		SELECT COUNT(*)
+		FROM 
+			SELLER_REVIEW
+		WHERE 
+			review_reader_id = #{member_id}
+	</select>
+
+
+
+
+
+
+
+	<!-- 글 정보 수정작업 -->
+	<!-- 파일은 파일명이 전달되었을경우(널스트링아닐경우)에만 수정 -->
+	<!-- 날짜는 변경X? (끌어올리기기능 사용시에만 업데이트?) -->
+	<update id="updateSecondhand" >
+		UPDATE SECONDHAND
+		SET 
+			secondhand_price = #{secondhand_pirce}
+			, secondhand_content = #{secondhand_content}
+			, secondhand_deliveryType_ptp = #{secondhand_deliveryType_ptp}
+			, secondhand_paymentTpye_ptp = #{secondhand_paymentTpye_ptp}
+				<if test="!file1.equals('')">
+					, secondhand_image1 = #{secondhand_image1}
+				</if>
+				<if test="!file2.equals('')">
+					, secondhand_image2 = #{secondhand_image2}
+				</if>
+				<if test="!file3.equals('')">
+					, secondhand_image3 = #{secondhand_image3}
+				</if>
+							
+			, category_idx = #{category_idx}
+			, secondhand_deliveryType_parcel = #{secondhand_deliveryType_parcel}
+			, secondhand_deliveryType_zstation = #{secondhand_deliveryType_zstation}
+			, secondhand_deliveryType_zman = #{secondhand_deliveryType_zman}
+			, secondhand_paymentTpye_zpay = #{secondhand_paymentTpye_zpay}
+		WHERE
+			secondhand_idx = #{secondhand_idx}
+	</update>
+	
+	<!-- 글 삭제작업 -->
+	<!-- 전달받은 상품번호와 일치하는 레코드 삭제 -->
+	<delete id="deleteSecondhand">
+		DELETE
+			FROM SECONDHAND
+			WHERE
+				secondhand_idx = #{secondhand_idx}
+	</delete>
+
+
+	<!-- 글 상세정보 조회 - 조회수 증가 작업 -->
+	<update id="updateReadCount">
+		UPDATE SECONDHAND
+		SET secondhand_readcount = secondhand_readcount + 1
+		WHERE 
+			secondhand_idx = #{secondhand_idx}
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 검색 - 중고상품리스트 조회 -->
+	<select id="selectSearchSecondhandList" resultType="com.itwillbs.zero.vo.SecondhandVO">
+		SELECT *
+		FROM 
+			SECONDHAND
+		WHERE
+	    	<if test="!productSearchKeyword.equals('')">
+        			secondhand_subject LIKE '%${productSearchKeyword}%'
+     		</if>
+		ORDER BY
+			secondhand_first_date
+	</select>	
+	
+	<!-- 검색된 중고상품의 개수 조회 -->
+	<select id="selectSearchSecondhandCount" resultType="int">
+		SELECT COUNT(*)
+		FROM 
+			SECONDHAND
+		WHERE
+	    	<if test="!productSearchKeyword.equals('')">
+        			secondhand_subject LIKE '%${productSearchKeyword}%'
+     		</if>
+	</select>
+	
+
+
+
+	<!-- 신고하기 insert작업 -->
+	<!-- 
+	reportType=에따라 report_type insert
+	report_content는 그대로 입력
+	 -->
+	 
+	 
+	 <insert  id="insertReport">
+  		INSERT INTO 
+  			REPORT (
+    			report_type, secondhand_idx, report_content, report_status, report_member_id, reported_member_id)
+  			VALUES (
+<!-- 			    <if test="reportType.equals('member')"> -->
+<!-- 			      '회원', null, #{reportReason}, '처리전', #{report_member_id}, #{member_id} -->
+<!-- 			    </if> -->
+			  
+<!-- 			    <if test="reportType.equals('goods')"> -->
+<!-- 			      '상품', #{secondhand_idx}, #{reportReason}, '처리전', #{report_member_id}, null -->
+<!-- 			    </if> -->
+<!-- 			  ); -->
+			    <choose>
+			      <when test="reportType.equals('member')">
+			        '회원', null, #{reportReason}, '처리전', #{report_member_id}, #{member_id}
+			      </when>
+			      <otherwise>
+			        '상품', #{secondhand_idx}, #{reportReason}, '처리전', #{report_member_id}, null
+			      </otherwise>
+			    </choose>
+			  );
+
+	</insert>
+
+
+<!-- 	<update id="insertReport"> -->
+<!-- 	      SET FOREIGN_KEY_CHECKS = 0; -->
+	
+<!-- 		INSERT INTO -->
+<!-- 			REPORT( -->
+<!-- 			<if test="reportType.equals('member')"> -->
+<!-- 				report_type -->
+<!-- 				, report_content -->
+<!-- 				, report_status -->
+<!-- 				, report_member_id -->
+<!-- 				, reported_member_id -->
+<!-- 				) -->
+<!-- 		VALUES ( report_type = '회원' -->
+<!-- 				, report_content = #{reportReason} -->
+<!-- 				, report_status = '처리전' -->
+<!-- 				, report_member_id = #{report_member_id} -->
+<!-- 				, reported_member_id = #{member_id} -->
+<!-- 				) -->
+<!-- 			</if> -->
+			
+<!-- 			<if test="reportType.equals('goods')"> -->
+<!-- 				report_type -->
+<!-- 				, secondhand_idx -->
+<!-- 				, report_content -->
+<!-- 				, report_status -->
+<!-- 				, report_member_id -->
+<!-- 				) -->
+<!-- 		VALUES ( report_type = '상품' -->
+<!-- 				, secondhand_idx = #{secondhand_idx} -->
+<!-- 				, report_content = #{reportReason} -->
+<!-- 				, report_status = '처리전' -->
+<!-- 				, report_member_id = #{report_member_id} -->
+<!-- 				) -->
+<!-- 			</if> -->
+<!-- 			) -->
+<!-- 		VALUES  -->
+<!-- 			(	 -->
+			
+			
+			
+<!-- 			<if test="reportType.equals('member')"> -->
+<!-- 				report_type = '회원' -->
+<!-- 				, report_content = #{reportReason} -->
+<!-- 				, report_status = '처리전' -->
+<!-- 				, report_member_id = #{report_member_id} -->
+<!-- 				, reported_member_id = #{member_id} -->
+<!-- 			</if> -->
+<!--  			<if test="reportType.equals('zman')">  -->
+<!--  				report_type = 'ZMAN'  -->
+<!--  			</if>  -->
+<!-- 			<if test="reportType.equals('goods')"> -->
+<!-- 				report_type = '상품' -->
+<!-- 				, secondhand_idx = #{secondhand_idx} -->
+<!-- 				, report_content = #{reportReason} -->
+<!-- 				, report_status = '처리전' -->
+<!-- 				, report_member_id = #{report_member_id} -->
+<!-- 			</if> -->
+<!-- 			)		 -->
+<!--       SET FOREIGN_KEY_CHECKS = 1; -->
+<!-- 	</update> -->
+	
+	
+	
+	
+	
+	<!-- 찜하기 등록 기능 insertLikeMovie -->
+	<insert id="insertLikeProduct">
+		INSERT INTO 
+			LIKES
+		VALUES(
+			null
+			, #{member_id}
+			, #{secondhand_idx}
+				)
+	</insert>
+	<!-- 찜하기 취소 기능 deleteLikeMovie -->
+	<delete id="deleteLikeProduct">
+		DELETE
+			FROM LKIES
+		WHERE
+			member_id = #{member_id}
+			AND secondhand_idx = #{secondhand_idx}
+	</delete>
+	
+<!-- 	 찜 갯수 카운트 -->
+<!-- 	<select id="countLikeProduct"> -->
+<!-- 		SELECT COUNT(*) -->
+<!-- 			FROM LIKES -->
+<!-- 			WHERE member_id = #{member_id} -->
+<!-- 	</select> -->
+	
+	<!-- 찜한 상품 찾기  -->
+	<select id="selectLikeProduct" resultType="com.itwillbs.zero.vo.LikeVO">
+		SELECT *
+			FROM LIKES
+			WHERE member_id = #{member_id}
+	</select>
+	
+	<!-- 끌어올리기 작업 시 업데이트 처리 (등록날짜)-->
+	<update id="updateDate">
+		UPDATE SECONDHAND
+		SET
+			secondhand_first_date = now()
+		WHERE 
+			secondhand_idx = #{secondhand_idx}
+	</update>
+	
+	
+</mapper>

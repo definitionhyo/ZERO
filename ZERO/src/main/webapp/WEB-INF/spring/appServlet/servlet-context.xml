@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:task="http://www.springframework.org/schema/task"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/task https://www.springframework.org/schema/task/spring-task.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+	
+	<!-- 이미지파일 업로드 위한 경로설정 (테스트) -->
+<!-- 	<resources mapping="/img/**" location="file:///D:/zero/resources/upload/" /> -->
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<context:component-scan base-package="com.itwillbs.zero" />
+	
+	<!-- 파일 업로드를 위한 Bean설정 추가 -->
+	<!-- 파일 업로드를 처리하는 객체 생성-->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <beans:property name="defaultEncoding" value="UTF-8"></beans:property>
+    <beans:property name="maxUploadSize" value="10485760"></beans:property>
+<!--     <beans:property name="uploadTempDir" value="file:C:\upload\tmp"></beans:property> 파일 저장 디렉토리 -->
+<!--     <beans:property name="maxInMemorySize" value="10485760"></beans:property> 최대 파일크기 10MB 설정 -->
+	</beans:bean>
+	
+	<!--  웹소켓 사용하기 위한 핸들러(Bean) 등록 -->
+	<websocket:handlers>
+		<websocket:mapping handler="chattingHandler" path="/chatting"/>
+		<!-- 추가 - udonmarket -->
+		<websocket:handshake-interceptors>
+			<beans:bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"></beans:bean>
+		</websocket:handshake-interceptors>
+		<websocket:sockjs></websocket:sockjs>
+	</websocket:handlers>
+	
+	<beans:bean id="chattingHandler" class="com.itwillbs.zero.handler.ChattingHandler"/>
+	
+	<!-- 웹소켓 핸들러 분리용 (채팅 - 지영) -->
+	<websocket:handlers>
+		<websocket:mapping handler="alarmHandler" path="/alarm"/>
+ 		<!-- 추가 - udonmarket -->
+		<websocket:handshake-interceptors>
+			<beans:bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"></beans:bean>
+		</websocket:handshake-interceptors>
+		<websocket:sockjs websocket-enabled="true"/>
+<!-- 		<websocket:sockjs></websocket:sockjs> -->
+	</websocket:handlers>
+	
+	<beans:bean id="alarmHandler" class="com.itwillbs.zero.handler.AlarmHandler"/>
+
+	<!-- NaverLoginBO Class에 대한 Bean설정 추가 -->
+	<!-- class 에 있는 경로에 NaverLoginBO를 @bean 으로 등록해서  -->
+	<!-- naverLoginBO 를 id로 사용하겠다는 의미  -->
+ 	<beans:bean id="naverLoginBO" class="com.itwillbs.zero.sns.NaverLoginBO" />
+
+	<!-- 속성값을 외부 파일에 저장 후 사용을 위한 properties 파일 등록 -->
+	<!-- webapp/resources 디렉토리가 아닌 src/main/resources 패키지 접근 시 classpath:/ 로 접근 -->
+	<!-- (설정 항목 중 classpath 가 가리키는 기본 위치 : src/main/resources 패키지) -->
+	<context:property-placeholder location="classpath:/config/appdata.properties"/>
+	
+	<task:scheduler id="jobScheduler" pool-size="10"/>
+	<task:annotation-driven scheduler= "jobScheduler"/>
+	
+</beans:beans>

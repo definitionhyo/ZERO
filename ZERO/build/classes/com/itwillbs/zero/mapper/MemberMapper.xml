@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.zero.mapper.MemberMapper">
+	<!-- 설정상 먼저 만들어둠! 파이팅! - 지영 -->
+	
+	<!-- 회원가입 - 정의효 -->
+	<insert id="insertMember" parameterType="Member">
+		INSERT
+			INTO
+				MEMBER
+			VALUES (
+				#{member_id}
+				, #{member_idx}
+				, #{member_nickname}
+				, #{member_passwd}
+				, #{member_name}
+				, #{member_birth}
+				, now()                -- {member_date}
+				, #{member_phone}
+				, '활동'                -- {member_status}
+				, #{member_agreement_marketing}  -- {member_agreement_marketing}
+				, '회원'                -- {member_type}
+				, 'Y'                   -- {member_mail_auth}
+				, #{member_image} 
+				, #{member_address1}
+				, #{member_address_detail1}
+				, #{member_address2}
+				, #{member_address_detail2}
+				, #{member_address3}
+				, #{member_address_detail3}
+				, #{member_withdrawal}
+				, #{member_bank_name}
+				, 'N'
+				, #{member_zipcode1}
+				, #{member_zipcode2}
+				, #{member_zipcode3}
+				, #{member_intro}
+				, #{member_address2_phone}
+				, #{member_address3_phone}
+				, #{member_address2_name}
+				, #{member_address3_name}
+				, #{member_phone}
+				, #{member_name}
+			)
+	
+	</insert>
+	
+	<!-- 아이디 중복 확인 - 정의효 -->
+	<select id="idCheck" parameterType="String" resultType="int">
+		SELECT COUNT(member_id) FROM MEMBER WHERE member_id = #{member_id}
+	</select>
+	
+	<!-- 닉네임 중복 확인 - 정의효 -->
+	<select id="nickCheck" parameterType="String" resultType="int">
+		SELECT COUNT(member_nickname) FROM MEMBER WHERE member_nickname = #{member_nickname}
+	</select>
+	
+	<!-- 핸드폰 중복 확인 - 정의효 -->
+	<select id="phoneCheck" parameterType="String" resultType="int">
+		SELECT COUNT(member_phone) FROM MEMBER WHERE member_phone = #{member_phone}
+	</select>
+	
+	<!-- 마이페이지 - 메인 구매내역 조회 - 정의효 -->
+	<select id="selectMyOdShList" resultType="OrSh">
+		SELECT
+			order_secondhand_seller
+			, order_secondhand_buyer
+			, order_secondhand_date
+			, order_secondhand_product
+			, order_secondhand_type
+			, order_secondhand_status
+			, secondhand_image1
+			, SECONDHAND.secondhand_idx
+			, order_secondhand_idx
+		FROM
+			ORDER_SECONDHAND
+		JOIN
+			SECONDHAND
+		ON
+			SECONDHAND.secondhand_idx = ORDER_SECONDHAND.secondhand_idx
+		WHERE 
+			order_secondhand_buyer = #{member_id}
+		ORDER BY
+			order_secondhand_date DESC
+		LIMIT
+			#{startRow}
+			, #{listLimit}			
+	</select>
+	
+	<!-- 마이페이지 - 메인 판매내역 조회 - 정의효 -->
+	<select id="selectMyShList" resultType="Secondhand">
+		SELECT
+			secondhand_subject
+			, secondhand_deliveryType_ptp
+			, secondhand_image1
+			, secondhand_first_date
+			, secondhand_deal_status
+			, MEMBER.member_id
+			, secondhand_idx
+		FROM
+			SECONDHAND 
+		JOIN
+			MEMBER
+		ON
+			MEMBER.MEMBER_ID = SECONDHAND.MEMBER_ID 
+		WHERE 
+			MEMBER.MEMBER_ID = #{member_id}
+		LIMIT
+			#{startRow}
+			, #{listLimit}
+	</select>
+	
+	
+	<!-- 특정 컬럼으로 회원정보 조회 -수정 -->
+	<select id="selectMemberCheck" resultType="map">
+		SELECT *
+			FROM MEMBER
+				WHERE ${column} = #{value}
+	</select>
+	
+	<!-- 세션 아이디가 동일한 회원 회원정보 변경 -수정 -->
+	<update id="updateMemberImage">
+		UPDATE MEMBER
+			SET ${column2} = #{value2}
+				WHERE ${column1} = #{member_id}
+	</update>
+	
+	
+		
+	
+	<!-- 회원정보 조회(혜진) -->
+	<select id="selectMember" resultType="com.itwillbs.zero.vo.MemberVO">
+		SELECT * FROM MEMBER
+		WHERE member_id = #{member_id}
+	</select>
+	
+	<!-- 계좌인증 완료한 회원의 member_bank_auth를 'Y'로 수정(혜진) -->
+	<update id="updateBankAuth">
+		UPDATE MEMBER
+		SET member_bank_auth = 'Y'
+		WHERE member_id = #{member_id}
+	</update>
+	
+	<!-- 회원 아이디로 계좌정보 조회 -->
+	<select id="selectMemberJoin" resultType="map">
+		SELECT * 
+			FROM MEMBER m
+				JOIN ZPAY z
+					ON m.member_id = z.member_id
+					WHERE m.member_id = #{member_id}
+	</select>
+	
+	<!-- 회원 아이디로 중고판매횟수, 판매후기 횟수, 경매 횟수, 찜누른 횟수 조회 count(*) -->
+	
+	<!-- 회원 아이디로 중고 판매 정보 조회 - 수정 -->
+	<select id ="selectSecondhandList" resultType="map">
+		SELECT * 
+			FROM MEMBER m
+				LEFT OUTER JOIN SECONDHAND s
+					ON s.member_id = m.member_id
+				LEFT OUTER JOIN ORDER_SECONDHAND o
+					ON s.secondhand_idx = o.secondhand_idx
+				LEFT OUTER JOIN ZMAN_DELIVERY z
+					ON o.order_secondhand_idx = z.order_secondhand_idx
+						WHERE s.member_id = #{member_id}
+				<!-- 검색어(searchKeyword)가 널스트링이 아닐 때 -->
+				<if test="!searchKeyword.equals('')">
+				<!-- 검색타입(searchType)에 따른 WHERE 절 조건 대상 변경 -->
+				<choose>
+					<when test="searchType.equals('전체')">
+					</when>
+					<when test="searchType.equals('판매중')">
+						AND secondhand_deal_status = '판매중'
+					</when>
+					<when test="searchType.equals('예약중')">
+						AND secondhand_deal_status = '예약중'
+					</when>
+					<when test="searchType.equals('판매완료')">
+						AND secondhand_deal_status = '판매완료'
+					</when>
+				</choose>
+			</if>
+			ORDER BY secondhand_first_date DESC
+	</select>
+	
+	<!-- 회원 아이디로 중고 판매 내역 리뷰 조회 - 수정 -->
+	<select id ="selectSecondhandReviewList" resultType="map">
+		SELECT * 
+			FROM MEMBER m
+				LEFT OUTER JOIN SECONDHAND s
+					ON s.member_id = m.member_id
+				LEFT OUTER JOIN ORDER_SECONDHAND o
+					ON s.secondhand_idx = o.secondhand_idx
+				LEFT OUTER JOIN MEMBER_REVIEW r
+					ON o.order_secondhand_idx = r.order_secondhand_idx
+						WHERE s.member_id = #{member_id}
+						AND r.review_reader_id = #{member_id}
+						ORDER BY s.secondhand_idx DESC
+	</select>
+	
+	
+	<!-- 회원 아이디로 경매 판매 내역 조회 - 수정 -->
+	<select id ="selectSellAuctionList" resultType="map">
+		SELECT * 
+			FROM MEMBER m
+				LEFT OUTER JOIN AUCTION_PRODUCT a
+					ON m.member_id = a.auction_seller_id
+				LEFT OUTER JOIN AUCTION_MANAGING am
+					ON a.auction_idx = am.auction_idx
+				LEFT OUTER JOIN ORDER_AUCTION o
+					ON a.auction_idx = o.auction_idx
+						WHERE a.auction_seller_id = #{member_id}
+<!-- 				검색어(searchKeyword)가 널스트링이 아닐 때 -->
+				<if test="!searchKeyword.equals('')">
+					<choose>
+						<when test="searchType.equals('전체')">
+						</when>
+						<when test="searchType.equals('등록')">
+							AND secondhand_deal_status = '등록'
+						</when>
+						<when test="searchType.equals('검수중')">
+							AND secondhand_deal_status = '검수중'
+						</when>
+						<when test="searchType.equals('검수완료')">
+							AND secondhand_deal_status = '검수완료'
+						</when>
+						<when test="searchType.equals('판매완료')">
+							AND secondhand_deal_status = '판매완료'
+						</when>
+					</choose>
+				</if>
+					ORDER BY auction_regist_date DESC
+	</select>
+	
+	<!-- 찜 목록리스트 조회 - 수정 -->
+	<select id = "selectLikeList" resultType="map">
+		SELECT * FROM LIKES l 
+			LEFT OUTER JOIN MEMBER m 
+				ON l.member_id = m.member_id
+			LEFT OUTER JOIN SECONDHAND s 
+				ON l.secondhand_idx = s.secondhand_idx
+					WHERE l.member_id = #{member_id}
+					ORDER BY like_idx DESC
+	</select>
+	
+	<!-- 찜 목록 삭제 -->
+<!-- 	<delete id="deleteLike"> -->
+<!-- 		DELETE FROM LIKES -->
+<!-- 			WHERE member_id = #{member_id} -->
+<!-- 				AND secondhand_idx = #{secondhand_idx} -->
+<!-- 	</delete> -->
+	
+	<!-- 중고거래 z맨 배달 여부 확인 (판매자) - 수정 -->
+	<select id="selectSecondhandSeller" resultType="int" >
+		SELECT count(*) 
+			FROM MEMBER m
+				JOIN ZMAN_DELIVERY z
+					ON m.member_id = z.seller_id
+						WHERE m.member_id = #{member_id}
+						AND zman_delivery_status = '배달 예정'
+	</select>
+				
+				
+	<!-- 중고거래 z맨 배달 여부 확인 (구매자) - 수정 -->
+	<select id="selectSecondhandBuyer" resultType="int" >
+		SELECT count(*) 
+			FROM MEMBER m
+				JOIN ZMAN_DELIVERY z
+					ON m.member_id = z.buyer_id
+						WHERE m.member_id = #{member_id}
+						AND zman_delivery_status = '배달 예정';
+	</select>
+	
+	<!-- 옥션거래 참여중인지 여부 확인 - 수정 -->
+	<select id="selectAuctionSeller" resultType="int">
+		SELECT count(*)
+			FROM MEMBER m
+				JOIN AUCTION_PRODUCT ap
+		 ON m.member_id = ap.auction_seller_id
+				 	JOIN AUCTION_MANAGING am
+				 		ON ap.auction_idx = am.auction_idx
+				 		WHERE m.member_id = #{member_id}
+				 			AND auction_manage_check_status = '검수완료'
+				 				AND auction_end_datetime > sysdate();
+	</select>
+	
+	<!-- 옥션거래 입찰중인지 여부 확인 - 수정 -->
+	<select id="selectAuctionBuyer" resultType="int">		 					
+		SELECT count(*) 
+			FROM MEMBER m
+				JOIN AUCTION_LOG_ROOM ar
+				 ON m.member_id = ar.member_id
+				 	JOIN AUCTION_PRODUCT ap
+				 		ON ap.auction_idx = ar.auction_idx
+				 			JOIN AUCTION_MANAGING am
+				 				ON ap.auction_idx = am.auction_idx
+				 					WHERE ar.member_id = #{member_id}
+				 						AND auction_end_datetime > sysdate();
+	</select>
+
+	<!-- 회원 계좌등록 여부 확인 - 정의효 -->
+	<select id="selectBankAuth" resultType="Member">
+		SELECT 
+			member_bank_auth
+		FROM
+			MEMBER
+		WHERE
+			member_id = #{member_id}
+	</select>
+	
+	<!-- 회원 중고상품 리뷰 등록 -->
+	<insert id="insertShReview" parameterType="MemReview">
+		INSERT 
+			INTO
+				MEMBER_REVIEW (
+					member_review_rating
+					, member_review_content
+					, member_reivew_date
+					, review_writer_id
+					, review_reader_id
+					, order_secondhand_idx
+				)
+			VALUES (
+				-- {member_review_idx} auto increment
+				#{member_review_rating}
+				, #{member_review_content}
+				, now()                    -- member_review_date
+				, #{review_writer_id}
+				, #{review_reader_id}
+				, #{order_secondhand_idx}
+			)
+			
+	</insert>
+	
+	<!-- 리뷰 있는지 조회 -->
+	<select id="selectWriteReview" resultType="int">
+	    SELECT 
+	        COUNT(*)
+	    FROM 
+	        MEMBER_REVIEW
+	    WHERE 
+	        review_writer_id = #{member_id}
+	    AND
+	        order_secondhand_idx = #{order_secondhand_idx}
+	</select>
+	
+	
+	<!-- 대표 주소록 추가 -->
+	<update id="updateMainAddress">
+		 UPDATE MEMBER
+	        SET 
+	        <choose>
+	        	<when test="add_num.equals('main_add2')"> 
+	        		member_address2_name = member_address1_name
+		        	, member_address2_phone = member_address1_phone
+		        	, member_zipcode2 = member_zipcode1
+		        	, member_address2 = member_address1
+		        	, member_address_detail2 = member_address_detail1
+	        	</when>
+	        	<when test="add_num.equals('main_add3')"> 
+	        		member_address3_name = member_address1_name
+		        	, member_address3_phone = member_address1_phone
+		        	, member_zipcode3 = member_zipcode1
+		        	, member_address3 = member_address1
+		        	, member_address_detail3 = member_address_detail1
+	        	</when>
+	        </choose>
+	        	    , member_address1_name = #{map.member_address_name}
+		        	, member_address1_phone = #{map.member_phone}
+		        	, member_zipcode1 = #{map.member_zipcode}
+		        	, member_address1 = #{map.member_address}
+		        	, member_address_detail1 = #{map.member_address_detail}
+				WHERE
+				    member_id = #{map.member_id}
+	</update>
+	
+	<!-- 주소록 추가 -->
+	<update id="updateAddress">
+		 UPDATE MEMBER
+	        SET 
+	        <choose>
+	        	<when test="add_num.equals('add2')"> -- 주소 2인 경우
+	        		member_address2_name =  #{map.member_address_name}
+		        	, member_address2_phone = #{map.member_phone}
+		        	, member_zipcode2 = #{map.member_zipcode}
+		        	, member_address2 = #{map.member_address}
+		        	, member_address_detail2 = #{map.member_address_detail}
+	        	</when>
+	        	<when test="add_num.equals('add3')"> -- 주소 3인 경우
+	        		member_address3_name =  #{map.member_address_name}
+		        	, member_address3_phone = #{map.member_phone}
+		        	, member_zipcode3 = #{map.member_zipcode}
+		        	, member_address3 = #{map.member_address}
+		        	, member_address_detail3 = #{map.member_address_detail}
+	        	</when>
+	        </choose>
+	        WHERE
+    			member_id = #{map.member_id}
+	</update>
+	
+	
+	<!-- 주소록 삭제 -->
+	<update id="deleteAddress">
+		UPDATE MEMBER
+	        SET 
+	        <choose>
+	        	<when test="rmv.equals('rmv2')"> -- 주소 2 삭제인 경우
+	        		member_address2_name =  null
+		        	, member_address2_phone = null
+		        	, member_zipcode2 = null
+		        	, member_address2 = null
+		        	, member_address_detail2 = null
+	        	</when>
+	        	<when test="rmv.equals('rew2_rmv3')"> -- 주소 3을 2로 업데이트 후 삭제인 경우
+	        		member_address2_name = member_address3_name
+		        	, member_address2_phone = member_address3_phone
+		        	, member_zipcode2 = member_zipcode3
+		        	, member_address2 = member_address3
+		        	, member_address_detail2 = member_address_detail3
+	        		, member_address3_name =  null
+		        	, member_address3_phone = null
+		        	, member_zipcode3 = null
+		        	, member_address3 = null
+		        	, member_address_detail3 = null
+	        	</when>
+	        	<when test="rmv.equals('rmv3')"> -- 주소 3 삭제인 경우
+	        		member_address3_name =  null
+		        	, member_address3_phone = null
+		        	, member_zipcode3 = null
+		        	, member_address3 = null
+		        	, member_address_detail3 = null
+	        	</when>
+	        </choose>
+	        WHERE
+    			member_id = #{map.member_id}
+	</update>
+	
+	<!-- 주소록 변경 -->
+	<update id="modifyAddress">
+		UPDATE MEMBER
+			SET
+			<choose>
+				<when test="rew.equals('rew_num1')"> -- 주소1 변경
+					member_address1_name = #{member_address_name}
+		        	, member_address1_phone = #{member_phone}
+		        	, member_zipcode1 = #{member_zipcode}
+		        	, member_address1 = #{member_address}
+		        	, member_address_detail1 = #{member_address_detail}
+				</when>
+				<when test="rew.equals('rew_num2') and chk_main eq 'false'"> -- 주소2 변경
+					member_address2_name = #{member_address_name}
+		        	, member_address2_phone = #{member_phone}
+		        	, member_zipcode2 = #{member_zipcode}
+		        	, member_address2 = #{member_address}
+		        	, member_address_detail2 = #{member_address_detail}
+				</when>
+				<when test="rew.equals('rew_num3') and chk_main eq 'false'"> -- 주소3 변경
+					member_address3_name = #{member_address_name}
+		        	, member_address3_phone = #{member_phone}
+		        	, member_zipcode3 = #{member_zipcode}
+		        	, member_address3 = #{member_address}
+		        	, member_address_detail3 = #{member_address_detail}
+				</when>
+				<when test="rew.equals('rew_num2') and chk_main eq 'true'"> -- 주소2 대표 변경
+					member_address2_name = member_address1_name
+		        	, member_address2_phone = member_address1_phone
+		        	, member_zipcode2 = member_zipcode1
+		        	, member_address2 = member_address1
+		        	, member_address_detail2 = member_address_detail1
+		        	, member_address1_name = #{member_address_name}
+		        	, member_address1_phone = #{member_phone}
+		        	, member_zipcode1 = #{member_zipcode}
+		        	, member_address1 = #{member_address}
+		        	, member_address_detail1 = #{member_address_detail}
+				</when>
+				<when test="rew.equals('rew_num3') and chk_main eq 'true'"> -- 주소3 대표 변경
+					member_address3_name = member_address1_name
+		        	, member_address3_phone = member_address1_phone
+		        	, member_zipcode3 = member_zipcode1
+		        	, member_address3 = member_address1
+		        	, member_address_detail3 = member_address_detail1
+		        	, member_address1_name = #{member_address_name}
+		        	, member_address1_phone = #{member_phone}
+		        	, member_zipcode1 = #{member_zipcode}
+		        	, member_address1 = #{member_address}
+		        	, member_address_detail1 = #{member_address_detail}
+				</when>
+			</choose>
+					WHERE
+					    member_id = #{member_id}
+	</update>
+	
+		<!-- 리뷰 자료 가져오기 -->
+	<select id="selectReview" resultType="map">
+		SELECT
+			*
+		FROM
+			MEMBER_REVIEW
+		JOIN
+			ORDER_SECONDHAND 
+		ON
+			ORDER_SECONDHAND.ORDER_SECONDHAND_IDX = MEMBER_REVIEW.ORDER_SECONDHAND_IDX  
+		WHERE
+			review_writer_id = #{member_id}
+	</select>
+	
+	<!-- 리뷰 삭제하기 -->
+	<delete id="deleteReview">
+		DELETE 
+			FROM
+				MEMBER_REVIEW
+			WHERE
+				review_writer_id = #{member_id}
+			AND
+				order_secondhand_idx = #{order_secondhand_idx}
+	</delete>
+	
+	
+	  <!-- 나의 문의 내역 조회 -->
+  <select id="selectMyInq" resultType="com.itwillbs.zero.vo.CsVO">
+ 		SELECT *
+ 			FROM CS
+ 			WHERE member_id = #{member_id}
+  </select>
+  
+   <!-- 나의 문의 내역 조회 : 게시판 -->
+  <select id="selectMyInqList" resultType="com.itwillbs.zero.vo.CsVO">
+  		SELECT *
+ 			FROM CS
+ 			WHERE member_id = #{member_id}
+  </select>
+  
+    <!-- 나의 문의 내역 상세 조회-->
+	  <select id="selectMyInquiryDetail" resultType="com.itwillbs.zero.vo.CsVO">
+	  		SELECT 
+	 			cs_idx
+	 			, cs_subject
+	 			, cs_content
+	 			, cs_date
+	 			, cs_type
+	 			, cs_file
+	 			, cs_phone
+	 			, cs_reply
+	 			, m.member_id
+	 		FROM CS c
+			JOIN MEMBER m ON c.member_id = m.member_id
+			WHERE cs_idx = #{cs_idx}
+	  </select>
+
+	<!--  나의 문의 내역 수정 -->
+	<update id="updateMyInqList">
+		UPDATE
+			CS
+			SET 
+  				cs_content = #{cs_content}
+				<if test="cs_file neq ''">
+  					, cs_file = #{cs_file}
+  				</if>
+  			WHERE cs_idx = #{cs_idx}
+	</update>
+
+	<!-- 나의 문의 내역 1:1 문의 글 삭제 -->
+	<delete id="deleteMyInq">
+		DELETE 
+			FROM
+				CS
+			WHERE 
+				cs_idx = #{cs_idx} 
+	</delete>
+	
+	<!-- 이메일과 휴대폰번호가 일치하는 회원정보 조회 -->
+	<select id="isCheckIdPhone" resultType="map">
+		SELECT *
+		FROM MEMBER
+			WHERE member_id = #{member_id}
+			AND member_phone = #{member_phone}
+	</select>
+	
+	<!-- 임시비밀번호로 회원정보 변경 -->
+	<update id="updateMemberPasswd">
+		UPDATE MEMBER
+			SET member_passwd = #{securePasswd}
+			WHERE member_id = #{member_id}
+	</update>
+	
+</mapper>
