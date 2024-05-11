@@ -1,0 +1,338 @@
+@charset "UTF-8";
+	body{
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		min-width: 360px;
+	}
+		
+
+	#main{
+		margin-left: auto;
+ 		margin-right: auto;
+ 		max-width: 1280px;
+	}
+	
+	.shortcut_collection{
+		margin-top: 28px;
+		margin-bottom: 28px;
+	}
+	
+	.shortcut_items_wrap{
+	margin-left: auto;
+    margin-right: auto;
+    max-width: 1280px;
+    padding-left: 16px;
+    padding-right: 16px;
+    display: grid;
+    grid-template-columns: repeat(5,minmax(0,1fr));
+    grid-row-gap: 16px;
+    row-gap: 16px;
+    grid-column-gap: 8px;
+    -webkit-column-gap: 8px;
+    -moz-column-gap: 8px;
+    column-gap: 8px;
+	}
+	
+	.shortcut_item{
+		text-align: center;
+		display: inline-block;
+		cursor: pointer;
+	}
+
+	.shortcut_item_title{
+		font-size: 12px;
+		letter-spacing: -.15px;
+		color: #333;
+		margin-top: 8px;
+	}
+	
+	.shortcut_item .card{
+		width: auto; 
+		border: none;
+	}
+	
+	.shortcut_collection img{
+		border-radius: 10px;
+		height: auto;
+		width: auto;
+	}
+	
+	.productArea{
+		margin-top: 30px;
+		margin-bottom: 28px;
+	}
+	
+	.productListArea {
+		overflow-y: hidden;
+		overflow-x: scroll;
+	}
+	
+	.productListArea::-webkit-scrollbar {
+	    width: 10px;  /* 세로축 스크롤바 폭 너비 */
+	    height: 10px;  /* 가로축 스크롤바 폭 너비 */
+	}
+	
+	/* 스크롤바 막대 */
+	.productListArea::-webkit-scrollbar-thumb {
+	    background: #aaa; /* 스크롤바 막대 색상 */
+	    border: 2px solid #dfdfdf; /* 스크롤바 막대 테두리 설정  */
+	    border-radius: 12px 12px 12px 12px;
+	    height: 6px;
+	}
+	
+	.productListArea::-webkit-scrollbar-thumb:hover {
+		background-color:#777;
+	}
+	
+	.titleArea{
+		padding: 0 16px;
+		margin-bottom: 16px;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 1280px;
+	}
+	
+	.titleArea .title{
+		font-size: 17px;
+		font-weight: 700;
+		color: #333;
+	}
+	
+	.productListArea{
+		width: 100%;
+		display: flex;
+		flex-wrap: nowrap;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+		padding-left: 16px;
+		padding-right: 16px;
+		grid-gap: 8px;
+		gap: 8px;
+	}
+	
+	.btnArea{
+		padding: 0 32px;
+		text-align: center;
+	}
+	
+	.productArea .btnArea button{
+		padding: 0 30px;
+		margin-top: 20px;
+	}
+	
+	.productListArea .card{
+		overflow: hidden;
+		min-width: 210px;
+		max-width: 215px;
+		margin: auto;
+	}
+	
+	.carousel-inner img {
+	    height: 100%;
+	    min-height: 200px;
+	    max-height: 480px;
+	    object-fit: contain;
+	}
+	/* 화살표 위치 수정 */
+	.prevArrow {
+	    left: 150px;
+	}
+	.nextArrow {
+	    right: 150px;
+	}
+	
+	/* 상품목록 부분 */
+	.HomeProductListArea {
+		margin-left: auto;
+	    margin-right: auto;
+		margin-top: 25px;
+		max-width: 1280px;
+		padding-left: 16px;
+	    padding-right: 16px;
+	    display: grid;
+	    grid-template-columns: repeat(5,1fr);
+	    grid-row-gap: 16px;
+	    row-gap: 40px;
+	    grid-column-gap: 10px;
+	    -webkit-column-gap: 10px;
+	    -moz-column-gap: 10px;
+	    column-gap: 10px;
+	}
+	/* 상품카드 하나 */
+	.HomeProductListArea .card {
+		max-width: 240px;
+		display: inline-block;
+		max-width: 100%;
+	}
+	.homeImg {
+		display: block;
+		margin: auto;
+		border-radius: 10px;
+		height: 230px;
+		width: 230px;
+		object-fit: cover;
+	}
+	.HomeProductListArea .card-text, .HomeProductListArea .card-price {
+		margin-bottom: 8px;
+	}
+	.HomeProductListArea .product_info_brand {
+		margin: 5px 0 5px 0;
+		font-weight: bold;
+		font-size: 13px;
+	}
+	.HomeProductListArea .card-price {
+		font-size: 12px;
+	}
+	.HomeProductListArea .card-text {
+		line-height: 16px;
+	/* 	vertical-align: middle; */
+		display: flex;
+	/* 	align-items: center; */
+		height: 32px;
+	    font-size: 14px;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	/*     display: -webkit-box; */
+	    -webkit-line-clamp: 2; /* 두 줄까지는 보이게 */
+	    -webkit-box-orient: vertical;
+	/*  	white-space: nowrap; 영역보다 커도 줄 바꿈하지마라 */
+	}
+	
+/* ----------------------------------------------------------------------------------------------------------------- */
+@media only screen and (min-width: 768px) {	
+
+	/* slid */
+	#slid{
+		overflow: hidden;
+		position: relative;
+		max-height: 480px;
+	}
+	
+	#slid #carouselExampleIndicators{
+		max-height: inherit;
+	}
+
+
+	/* main */
+	
+	.shortcut_collection{
+		margin-top: 40px;
+		margin-bottom: 56px;
+	}
+	
+	.shortcut_items_wrap{
+		padding: 0 40px;
+	}
+	
+	.shortcut_item{
+		text-align: center;
+		display: inline-block;
+		cursor: pointer;
+	}
+
+	.shortcut_item_title{
+		font-size: 15px;
+		letter-spacing: -.15px;
+		color: #333;
+		margin-top: 8px;
+	}
+	
+	.shortcut_item .card{
+		width: auto; 
+		border: none;
+	}
+	
+	.shortcut_collection img{
+		border-radius: 10px;
+		max-height: 100px;
+		max-width: 233px;
+		height: auto;
+		width: auto;
+	}
+	
+	#main hr{
+ 		max-width: 1280px;
+ 		margin: 56px auto 40px;
+	}
+	
+	/* 상품리스트 */
+	.productArea{
+		margin-top: 30px;
+		margin-bottom: 56px;
+	}
+	
+	.titleArea{
+		padding-left: 40px;
+		padding-right: 40px;
+		margin-bottom: 16px;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 1280px;
+	}
+				
+	.productListArea .card{
+		overflow: hidden;
+		min-width: 219px;
+		max-width: 294px;
+	}
+	
+}
+
+@media only screen and (max-width: 768px) {	
+	
+/* 	#main{ */
+/* 		padding: 0 15px 20px 15px; */
+/* 	} */
+	
+	.HomeProductListArea{
+		margin-left: auto;
+    	margin-right: auto;
+		padding: 0 40px;
+		margin-top: 15px;
+		width: 95vw;
+/* 		max-width: 768px; */
+		padding-left: 16px;
+	    padding-right: 16px;
+	    display: grid;
+/* 	    grid-template-columns: repeat(2,minmax(0,1fr)); */
+	    grid-template-columns: repeat(2,1fr);
+/* 	    grid-row-gap: 16px; */
+	    row-gap: 20px;
+/* 	    grid-column-gap: 5px; */
+	    -webkit-column-gap: 10px;
+	    -moz-column-gap: 10px;
+	    column-gap: 10px;
+	}
+	.HomeProductListArea .card{
+		overflow: hidden;
+/* 		min-width: 210px; */
+/* 		max-width: 240px; */
+	}
+	.HomeProductListArea img {
+		display: block;
+		margin: auto;
+		border-radius: 10px;
+		height: 42vw;
+		width: 42vw;
+/* 		min-width: 100px; */
+/* 		max-width: 200px; */
+		object-fit: cover;
+	}
+	
+	/* 화살표 위치 수정 */
+	.prevArrow {
+	    left: 10px;
+	}
+	.nextArrow {
+	    right: 10px;
+	}
+	
+}

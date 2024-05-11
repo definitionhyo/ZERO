@@ -1,0 +1,553 @@
+@charset "UTF-8";
+
+#main{
+	padding: 100px 40px 20px 40px;
+	box-sizing: border-box;
+}
+#main hr{
+	max-width: 1280px;
+	margin: 10px auto 10px;
+}
+
+#chatListMain {
+	margin-top: 84px;
+	background-color: #f4f6f8;
+}
+/* 채팅목록, 채팅영역을 양쪽에 위치시키기 */
+#mainArea {
+	display: flex;
+	min-height: 600px;
+}
+#chatListMainArea {
+/* 	min-width: 500px; */
+	width: 550px;
+	padding: 40px 40px;
+	margin: auto;
+}
+
+/* 채팅목록 */
+#chatListArea {
+	min-width: 360px;
+	max-width: 520px;
+	min-height: 600px;
+	margin-bottom: 12px;
+    padding: 20px;
+    border-radius: 16px;
+    background-color: #fff;
+    box-shadow: 0 4px 16px 0 rgba(0,0,0,.05);
+}
+
+/* 아이콘들 위치변경 */
+.material-icons {
+	vertical-align: -4px;
+	font-size: 18px;
+}
+
+#chatList {
+	min-width: 320px;
+/* 	margin: auto; */
+	
+/* 	list-style : none; */
+}
+#chatList #title {
+	font-size: 20px;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+.listTr {
+	border-top: 1px solid #f0f2f4;
+}
+.listImg {
+	width: 70px;
+	height: 90px;
+	text-align: center;
+}
+.listImg img{
+	margin: auto;
+}
+.chatRoomShort{
+	vertical-align: bottom;
+	padding-left: 10px;
+}
+ .shortChatMsg {
+/* 	width: 250px; */
+/* 	vertical-align: top; */
+	padding-left: 10px;
+}
+
+/* 상대방 이름 */
+.chatUserId {
+	font-size: 18px;
+	font-weight: bold;
+}
+/* 최신 채팅 시간 */
+.chatTimeFromNow {
+	font-size: 15px;
+	color: gray;
+}
+
+.shortChatMsg {
+	font-size: 14px;
+	color: gray;
+}
+.shortChatMsg div {
+	display: inline-block;
+	width: 285px;
+	height: 20px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 채팅목록 - 프로필 사진 */
+#chatList img {
+	vertical-align: middle;
+}
+/* #chatList img { */
+.listImg img {
+	width: 50px;
+	height: 50px;
+	object-fit: cover;
+	border-radius: 50%;
+}
+.productImg img {
+	width: 50px;
+	height: 50px;
+	object-fit: cover;
+	border-radius: 10px;
+	
+}
+.chatPage {
+	padding: 0;
+	margin: 0;
+}
+/* 채팅창 뒤로가기 버튼 */
+.backBtn {
+	margin-bottom: 10px;
+	cursor: pointer;
+}
+/* 채팅창 */
+#chatArea {
+	flex: 1 0 auto;
+	background-color: white;
+/* 	position: relative; */
+}
+/* 채팅정보 */
+.art_firstRow {
+	position: relative;
+	margin: 0 0 10px 5px;
+}
+.art_firstRow div {
+	display: inline-block;
+}
+.art_firstRow .co01 {
+	max-width: 90px;
+	min-width: 90px;
+	cursor: pointer;
+}
+.co02 {
+	max-width: 600px;
+	min-width: 290px;
+	cursor: pointer;
+}
+.co02 div {
+	vertical-align: middle;
+}
+.co02-2 {
+/* 	max-width: 500px; */
+	/* 영역보다 긴 글의 경우 ... 으로 처리 */
+	white-space: nowrap; /* 영역보다 커도 줄 바꿈하지마라 */
+	overflow: hidden; /* 잘리는 부분 안보이게 함 */
+	text-overflow: ellipsis; /* 잘리는 부분 ...으로 처리 */
+}
+
+.co02-1, .co02-3 {
+	font-weight: bold;
+}
+.art_firstRow .co03 {
+	width: 110px;
+	position: absolute;
+	right: 5px;
+}
+.co03>button {
+	border: none;
+	background-color: #ffffffff;
+}
+
+.art_secondRow {
+	margin: 5px;
+}
+.art_secondRow button {
+	border: 1px groove gray;
+	border-radius: 18px;
+	background-color: #ffffffff;
+}
+.art_secondRow span {
+	font-size: 14px;
+}
+
+.product_photo img {
+	margin: auto;
+	width: 80px;
+	height: 80px;
+	border-radius: 10px;
+	object-fit: cover;
+}
+
+/* 채팅창 */
+.chatMsgInputArea {
+	display: block;
+	
+}
+#msgArea {
+	height: 50vh;
+	overflow: auto;
+	scroll-behavior: smooth;
+	position: relative; /* 이미지창 */
+}
+
+#chatMsgArea {
+/* 	height: 600px; */
+	flex-grow: 1;
+}
+/* ------ 채팅 구현 전 -> 테이블 */
+.mgsitem {
+	padding : 10px;
+	margin: 20px auto;
+	min-height: 30px;
+/* 	position: absolute; */
+}
+.noticeMsg {
+	color: gray;
+	text-align: center;
+	min-width: 300px;
+	max-width: 700px;
+	min-height: 40px;
+	margin: auto;
+	padding: 10px;
+}
+.noticeMsg div {
+	display: inline-block;
+	vertical-align: middle;
+	display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.35);
+    font-size: 14px;
+    margin: 8px 0px;
+}
+.noticeMsg div::before,
+.noticeMsg div::after {
+	content:"";
+	flex-grow:1;
+	margin:0px 16px;
+	background:rgba(0,0,0,0.35);
+	height:1px;
+	font-size:0px;
+	line-height: 0px;
+}
+
+.msgRight {
+	text-align: right;
+	margin-right: 10px;
+	position: relative;
+	right: 5px;
+}
+.msgLeft{
+	text-align: left;
+	margin-left: 10px;
+}
+.msg {
+	display: inline-block;
+	padding-left: 12px;
+	font-size: 15px;
+	min-width: 250px;
+	max-width: 400px;
+	text-align: left;
+}
+.msgTime {
+	display: inline-block;
+	font-size: 10px;
+	color: gray;
+	width: 60px;
+	vertical-align: bottom;
+}
+.alert {
+	padding: 7px 10px !important;
+	margin-bottom: 0 !important;
+}
+.msgRight .msg {
+	/* 본인 채팅 */
+	background-color: #e7d5ff;
+/* 	border-radius: 10px; */
+	padding: 10px;
+}
+.msgLeft .msg {
+	/* 상대방 채팅 */
+	background-color: #ccc;
+/* 	border-radius: 10px; */
+	padding: 10px 5px;
+}
+
+/* 채팅 입력 영역 */
+.inputArea {
+	margin-top: 1rem;
+/* 	position: absolute; */
+/* 	bottom: 10px; */
+}
+
+.listInfoBtn {
+	font-size: 15px;
+	background-color: #999;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	padding: 3px 5px;
+	vertical-align: middle;
+}
+
+.inputTextBox {
+	display: inline-block;
+	width: 85%;
+	font-size: 15px;
+	min-height: 30px;
+	border-radius: 10px;
+	box-shadow: 2px 5px 5px 2px gray;
+	vertical-align: middle;
+/*     -webkit-line-clamp: 2; 두 줄까지는 보이게 */
+/*     -webkit-box-orient: vertical; */
+}
+#inputText {
+	background-color: #ffffff00;
+	width: 100%;
+	padding: 3px 0 0 10px;
+	border: none;
+	outline: none;
+}
+.submitBtn {
+	font-size: 15px;
+	background-color: skyblue;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	padding: 3px 5px;
+	vertical-align: middle;
+}
+/* 입력창 밑에 기능버튼들 */
+.listSort {
+	min-width: 500px;
+	table-layout: fixed;
+}
+.listSort td {
+	text-align: center;
+	font-size: 14px;
+}
+.listSort i {
+	font-size: 50px;
+	text-align: center;
+}
+
+/* -------- 사진 보내기 관련 ----------  */
+/* 사진 등록 시 나오는 영역 */
+#img_zone {
+	background-color: #ddddddff;
+	display: block;
+}
+
+/* 이미지 미리보기 css */
+#img_preview0, #img_preview1, #img_preview2, #img_preview3, #img_preview4, #img_preview5{
+	display: none;
+	position: relative;
+	margin:5px;
+	width: 150px;
+	height: 150px; 
+/* 		border: 2px solid black; */
+
+}
+/* 미리보기 삭제버튼 css */
+#sum_style{
+	text-align:center;
+	width:75px;
+	height:20spx;
+    position:absolute; 
+	font-size:12px;
+	outline:none;
+	border:none;
+	border-radius:15px;
+    right:70px;
+/* 	    bottom:130px; */
+    /* z-index:1; */
+    background-color:rgba(0,0,0,0.5);
+    color:white;
+}
+.chk_style{
+	vertical-align: middle;
+	text-align:center;
+	
+	width:28px;
+	height:28px;
+    position:absolute; 
+	/* font-size:20px; */
+	outline:none;
+	border:none;
+	border-radius:18px;
+    right:9px;
+    bottom:115px;
+    /* z-index:1; */
+    background-color:rgba(0,0,0,0.5);
+    color:#ffcccc;
+}
+	
+/* 미리보기 삭제 css */
+#del_img1, #del_img2, #del_img3, #del_img4, #del_img5,#del_sum{
+	cursor: pointer;
+	display: none;
+}
+
+#imgup{
+	margin-top: 5px;
+}
+
+/* 이미지 미리보기 css */
+#imgup_1,#imgup_2, #imgup_3, #imgup_4, #imgup_5,#imgup_sum {
+	cursor: pointer;
+	display: none;
+	object-fit: cover;
+}
+
+/* 거래 모달창 */
+.modal {
+	min-width: 350px;
+	font-size: 14px;
+}
+.modal-price {
+	 margin: 8px auto 10px;
+}
+.modal-price div {
+	color: grey;
+	line-height: 20px;
+	margin-top: 5px;
+}
+
+.modal input {
+	width: 120px;
+}
+.modal input[type="number"] {
+	-webkit-appearance: none;
+	-moz-appearance: textfield;
+	appearance: textfield;
+	margin: 0;
+}
+.modal .btn {
+	font-weight: 300;
+	font-size: 15px;
+	margin: 0 5px 0;
+}
+/* ------------------------------------------------- */
+@media only screen and (max-width: 768px) {	
+	
+	#main{
+		padding: 10px 15px 20px 15px;
+		box-sizing: border-box;
+	}
+	
+	#navLine {
+	    margin: 10px auto 1px;
+	}
+	/* 채팅방 목록 margin 크기 조절 */
+	#chatListMain {
+		margin-top: 10px;
+	}
+	#chatListMainArea {
+	    max-width: 90vw;
+	    min-width: 80vw;
+	    padding: 20px 10px;
+	    box-sizing: content-box;
+/* 	    margin: auto; */
+/* 	    margin-left: 10px; */
+/* 	    display: flex; */
+/* 	    justify-content: center; */
+	}
+	/* 채팅방 목록 크기 조절 */
+	#chatListArea {
+		max-width: 460px
+	}
+	.shortChatMsg div {
+		width: 100%;
+	}
+	
+	#mainArea {
+/* 	    padding-top: 10px; */
+		position: relative;
+/* 		border: 1px solid red; */
+/* 		width: 100%; */
+		height: 100%;
+	}
+	
+	/* 반응형이 되면 */
+	#chatArea {
+		background-color: white;
+/* 		position: absolute; */
+/* 		width: 100%; */
+		height: 100%;
+	}
+/* 	#chatList { */
+/* 		width: 450px; */
+/* 	} */
+	/* 상품 사진 반응형 */
+	.product_photo img {
+	    margin: auto;
+	    width: 70px;
+	    height: 70px;
+	    border-radius: 10px;
+	    object-fit: cover;
+	}
+	
+	.art_firstRow .co01 {
+		max-width: 70px;
+	}
+	.art_firstRow .co02 {
+		max-width: 200px;
+		vertical-align: middle;
+	}
+	.co02 div {
+		width: 200px;
+		/* 영역보다 긴 글의 경우 ... 으로 처리 */
+		white-space: nowrap; /* 영역보다 커도 줄 바꿈하지마라 */
+		overflow: hidden; /* 잘리는 부분 안보이게 함 */
+		text-overflow: ellipsis; /* 잘리는 부분 ...으로 처리 */
+	}
+	.art_firstRow .co03 {
+		width: 110px;
+		position: absolute;
+		right: 5px;
+	}
+	
+	/* 채팅창 */
+	.chatMsgArea {
+		width: 100%;
+		height: 100%;
+	}
+	.msgRight {
+		margin-right: 0;
+	}
+	.msgLeft{
+		margin-left: 0;
+	}
+	.alert {
+		padding: 5px 0;
+	}
+	.msg {
+		min-width: 120px;
+		max-width: 250px;
+		border-radius: 15px;
+		padding: 5px 10px;
+		font-size: 0.8em;
+	}
+	
+	.listSort {
+		width: 400px;
+		table-layout: fixed;
+	}
+	
+}

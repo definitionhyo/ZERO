@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.zero.mapper.ChattingMapper">
+	
+	<!-- 채팅방 조회 -  SELECT -->
+	<!-- 세션아이디로 조회해서 현재 열려있는 채팅방을 List로 반환받기 -->
+	<select id="selectChatRoomList" resultType="ChatRoomList">
+		SELECT *
+			FROM
+				CHATROOMLIST
+			WHERE
+				seller_id = #{member_id}
+				OR buyer_id = #{member_id}
+			ORDER BY
+				chat_datetime DESC
+			LIMIT
+				#{startRow} 
+					, #{listLimit}
+	</select>
+	
+	<!-- 채팅방 갯수 조회 -->
+	<select id="selectChatRoomListCount" resultType="int">
+		SELECT
+			COUNT(*)
+			FROM
+				CHATROOMLIST
+			WHERE
+				seller_id = #{member_id}
+				OR buyer_id = #{member_id}
+	</select>
+	
+	<!-- 채팅 조회 - SELECT -->
+	<select id="selectChatList" resultType="Chat">
+		SELECT *
+			FROM
+				( SELECT *
+					FROM
+						CHAT
+					WHERE
+						chat_room_idx = #{chat_room_idx}
+					ORDER BY
+						chat_idx DESC
+					LIMIT
+						#{startRow} 
+						, #{listLimit}
+					) AS SUB
+				<if test="pageNum eq 1">
+					ORDER BY
+						chat_idx
+				</if>
+	</select>
+	
+	<!-- 채팅 무한스크롤을 위한 총 페이지 계산 -->
+	<select id="selectGetChatListCount" resultType="int">
+		SELECT
+			COUNT(*)
+			FROM
+				CHAT
+			WHERE
+				chat_room_idx = #{chat_room_idx}
+	</select>
+		
+	<!-- 채팅 내용 삽입 - INSERT -->
+	<insert id="insertChat">
+		INSERT
+			INTO CHAT
+			VALUES
+				(
+				null		-- chat_idx
+				, now()		-- chat_datetime
+				, #{chat_content}		-- chat_content
+				, #{chat_content_type}		-- chat_content_type
+				, #{chat_room_idx}		-- chat_room_idx
+				, #{member_id}		-- member_id
+				)
+	
+	</insert>
+	
+	<!-- 채팅방 번호 찾기 -->
+	<select id="selectChatRoomIdx" resultType="int">
+		SELECT
+			IFNULL(MAX(chat_room_idx), 0)
+			FROM
+				CHAT_ROOM
+			WHERE
+				seller_id = #{map.seller_id}
+				AND 
+					buyer_id = #{buyer_id}
+				AND
+					secondhand_idx = #{map.secondhand_idx}
+	</select>
+	
+	<!-- 채팅방 생성하기 -->
+	<insert id="insertChatRoom">
+		INSERT
+			INTO CHAT_ROOM
+			VALUES
+				(
+				null
+				, #{map.seller_id}
+				, #{buyer_id}
+				, #{map.secondhand_idx}
+				)
+	</insert>
+	
+	<!-- 채팅번호로 채팅방 정보조회하기 -->
+	<select id="selectChatRoom" resultType="ChatRoom">
+		SELECT
+			chat_room_idx
+			, seller_id
+			, buyer_id
+			, secondhand_idx
+			, M1.member_nickname AS buyer_nickname
+			, M2.member_nickname AS seller_nickname
+			FROM
+				CHAT_ROOM CR
+				JOIN 
+					MEMBER M1 ON M1.member_id = CR.buyer_id
+				JOIN
+					MEMBER M2 ON M2.member_id = CR.seller_id
+			WHERE
+				chat_room_idx = #{chat_room_idx}
+	</select>
+	
+	<!-- 나중에 다른 곳으로 옮길지 고민 - ORDER_SECONDHAND -->
+	<!-- 거래정보를 ORDER_SECONDHAND에 저장 -->
+	<insert id="insertOrderInfo">
+		INSERT INTO
+			ORDER_SECONDHAND
+			VALUES
+				(
+				NULL	-- order_secondhand_idx
+				, now()	-- order_secondhand_date 
+				, #{order_secondhand_product}	-- order_secondhand_product
+				, #{order_secondhand_price}		-- order_secondhand_price 
+				, #{type}						-- order_secondhand_type
+<!-- 				, 'N'							 order_secondhand_iszpay -->
+				, #{order_secondhand_seller}
+				, #{order_secondhand_buyer}
+				, #{secondhand_idx}				-- secondhand_idx
+				, NULL	-- zman_delivery_idx
+				, '거래진행중'	-- order_secondhand_status
+				,
+				<choose>
+					<when test="type.equals('Z맨')">
+						3000		-- order_delivery_commission(z맨 배달비)
+					</when>
+					<otherwise>
+						0
+					</otherwise>
+				</choose>
+				)
+	</insert>
+	
+	<!-- 거래상태 변경 '판매중' -> '예약중',  -> 판매완료 -->
+	<update id="updateDealStatuse">
+		UPDATE
+			SECONDHAND 
+			SET
+				secondhand_deal_status = #{type}
+			WHERE
+				secondhand_idx = #{secondhand_idx};
+	</update>
+	
+	<!-- 나중에 다른 곳으로 옮길지 고민 - ZMAN_DELIVERY -->
+	<!-- 신청폼 들어올 때 값 넣기, 중복된 값이면 업데이트만 하기 - INSERT -->
+	<insert id="insertZmanOrderInfo">
+		INSERT
+			INTO ZMAN_DELIVERY
+				(
+				zman_delivery_startspot
+				, zman_delivery_endspot
+				, zman_delivery_commission
+				, zman_delivery_status
+				, seller_id
+				, buyer_id
+				, order_secondhand_idx
+				)
+			VALUES
+				(
+				NULL			-- zman_delivery_startspot 판매자가 넣기
+				, NULL			-- zman_delivery_endspot	구매자가 넣기
+				, 3000			-- zman_delivery_commission(default)
+				, "입력 중"		-- zman_delivery_status
+				, #{seller_id}	-- seller_id 판매자id
+				, #{buyer_id}		-- buyer_id 구매자id
+				, #{order_secondhand_idx}		-- order_secondhand_idx
+				)
+	</insert>
+	
+	<!-- 주소 업데이트하기 -->
+	<update id="updateZmanOrderInfo">
+		UPDATE ZMAN_DELIVERY
+			SET
+				<choose>
+					<when test="map.zman_delivery_startspot neq null and map.zman_delivery_endspot neq null">
+						zman_delivery_startspot = #{map.zman_delivery_startspot}
+						, zman_delivery_endspot = #{map.zman_delivery_endspot}
+					</when>
+					<when test="map.zman_delivery_endspot neq null">
+						zman_delivery_endspot = #{map.zman_delivery_endspot}
+					</when>
+					<otherwise>
+						zman_delivery_startspot = #{map.zman_delivery_startspot}
+					</otherwise>
+				</choose>
+			WHERE
+				zman_delivery_idx = #{zman_delivery_idx}
+	</update>
+	
+	<!-- z맨 호출신청 폼에 필요한 order_secondhand_idx 조회하기 -->
+	<select id="selectOrderSecondhandIdx" resultType="int">
+		SELECT order_secondhand_idx
+			FROM
+				ORDER_SECONDHAND
+			WHERE
+				secondhand_idx = #{secondhand_idx}
+	</select>
+	<!-- z맨 호출신청 폼에 필요한 주소 등 데이터 조회 - SELECT -->
+	<select id="selectZmanOrderInfo" resultType="com.itwillbs.zero.vo.ZmanDeliveryVO">
+		SELECT *
+			FROM
+				ZMAN_DELIVERY
+			WHERE
+				order_secondhand_idx = #{order_secondhand_idx}
+	</select>
+	<!-- Z맨 최종 호출 - UPDATE -->
+	<update id="updateZDelivery">
+		UPDATE ZMAN_DELIVERY
+			SET
+				zman_delivery_status = '배달 예정'
+			WHERE
+				zman_delivery_idx = #{zman_delivery_idx}
+	</update>
+	
+	
+	<!-- 중고거래 정보 조회 - Z페이 - SELECT -->
+	<select id="selectOrderSecondhandInfo" resultType="OrSh">
+		SELECT *
+			FROM
+				ORDER_SECONDHAND
+			WHERE
+				secondhand_idx = #{secondhand_idx}
+	</select>
+	
+	<!-- 주문내역 상태 변경 - ORDER_SECONDHAND - order_secondhand_status '거래완료' -->
+	<update id="updateOrderStatus">
+		UPDATE
+			ORDER_SECONDHAND
+			SET
+				order_secondhand_status = #{order_status_type}
+			WHERE
+				secondhand_idx = #{secondhand_idx}
+	</update>
+	
+	
+	
+	
+	
+</mapper>

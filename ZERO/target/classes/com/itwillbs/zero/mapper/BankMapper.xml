@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper  namespace="com.itwillbs.zero.mapper.BankMapper">
+
+	<!-- 이미 존재하는 토큰인지 확인 -->
+	<select id="selectExsitTokenCount" resultType="int">
+		SELECT COUNT(*) FROM BANK_TOKEN
+		WHERE member_id = #{member_id}
+		AND access_token = #{token.access_token}
+	</select>
+	
+	<!-- 이미 토큰이 존재할 경우 토큰 정보 업데이트 -->
+	<update id="updateToken">
+		UPDATE BANK_TOKEN
+		SET access_token = #{token.access_token}
+		WHERE member_id = #{member_id}
+	</update>
+
+	<!--  ZPAY 의 access_token 업데이트 -->
+	<update id="updateZpayToken">
+		UPDATE ZPAY
+		SET access_token = #{token.access_token}
+		WHERE member_id = #{member_id}
+	</update>
+
+
+	<!-- 토큰 정보 저장 - INSERT -->
+	<insert id="insertToken">
+		INSERT 
+			INTO BANK_TOKEN
+			VALUES (
+				null
+				, #{token.access_token}
+				, #{token.refresh_token}
+				, #{token.scope}
+				, #{token.user_seq_no}
+				, #{member_id}
+			)
+	</insert>
+	
+	
+	<!-- 토큰 정보 조회 - JOIN 구문 활용 -->
+	<select id="selectTokenForBankAuth" >
+			SELECT 
+				t.member_id, t.access_token, t.user_seq_no
+			FROM BANK_TOKEN AS t
+			LEFT JOIN MEMBER AS m
+			ON t.member_id = m.member_id
+			WHERE 
+				m.member_id = #{member_id}
+				AND m.member_bank_auth= 'Y'
+	
+	</select>
+</mapper>

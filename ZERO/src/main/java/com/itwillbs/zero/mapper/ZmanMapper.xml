@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.zero.mapper.ZmanMapper">
+	
+	<!-- ZMAN 회원가입 - 정의효 -->
+	<insert id="insertZman" parameterType="Zman">
+		INSERT
+			INTO
+				ZMAN(
+					zman_id
+					, zman_name
+					, zman_car_num
+					, zman_date
+					, zman_phone
+					, zman_status
+					, zman_withdrawal
+					, zman_mail_auth
+					, zman_report_count
+					, zman_transport
+					, zman_area
+					, zman_address
+					, zman_address_detail
+					, zman_education_completion
+					, zman_insurance_status
+					, zman_location_agreement
+					, zman_account
+					, zman_driver_license
+				)
+			VALUES (
+				#{zman.zman_id }
+				, #{zman.zman_name }
+				, #{zman.zman_car_num }
+				, now()				-- {zman_date }
+				, #{zman.zman_phone }
+				, '대기'             -- {zman_status }
+				, #{zman.zman_withdrawal }
+				, 'Y'				-- {zman_mail_auth }
+				, 0                 -- {zman_report_count }
+				, #{vehiclesStr }
+				, #{zman.zman_area }
+				, #{zman.zman_address }
+				, #{zman.zman_address_detail }
+				, now()				-- {zman_education_completion }
+				, now()				-- {zman_insurance_status }
+				, now()			-- {zman_location_agreement }
+				, #{zman.zman_account }
+				, #{zman.zman_driver_license }
+			)
+	</insert>
+	
+	<select id="selectZman" resultType="Zman">
+		SELECT 
+			*
+		FROM
+			ZMAN
+		WHERE
+			zman_id = #{member_id}
+	</select>	
+	
+</mapper>

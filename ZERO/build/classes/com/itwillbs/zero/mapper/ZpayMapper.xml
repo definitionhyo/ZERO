@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.zero.mapper.ZpayMapper">
+
+	<!-- ZPAY 사용자 여부 조회 -->
+	<select id="selectZpay" resultType="com.itwillbs.zero.vo.ZpayVO">
+		SELECT * FROM ZPAY
+		WHERE member_id = #{member_id}
+	</select>
+	
+	<!-- ZPAY 등록 -->
+	<insert id="insertZpay">
+		INSERT INTO ZPAY
+			VALUES (
+				null
+				, #{zpay_bank_name}
+				, #{zpay_bank_account}
+				, 0
+				, #{member_id}
+				, #{fintech_use_num}
+				, #{access_token}
+				, #{zpay_passwd}
+			)
+	</insert>
+	
+	<!-- ZPAY 비밀번호 변경 -->
+	<update id="updateZpayPasswd">
+		UPDATE ZPAY
+		SET zpay_passwd = #{new_zpay_passwd}
+		WHERE member_id = #{member_id}
+	</update>
+	
+	<!-- ZPAY 잔액 조회 -->
+	<select id="selectZpayBalance" resultType="Integer">
+		SELECT ifnull(zpay_balance, 0)
+			FROM ZPAY_HISTORY
+			WHERE zpay_history_idx 
+					= (SELECT MAX(zpay_history_idx) FROM ZPAY_HISTORY WHERE member_id = #{member_id})
+	</select>
+	
+	<!-- ZPAY 사용 내역(목록) 조회 -->
+	<select id="selectZpayHistory" resultType="com.itwillbs.zero.vo.ZpayHistoryVO">
+		SELECT * FROM ZPAY_HISTORY
+		WHERE member_id = #{member_id}
+		ORDER BY zpay_time DESC
+	</select>
+	
+	<!-- ZPAY 사용 내역(목록) 개수 조회 -->
+	<select id="selectZpayHistoryListCount" resultType="int">
+		SELECT COUNT(*)
+			FROM ZPAY_HISTORY
+				WHERE
+					member_id = #{member_id}
+					<if test="!searchType.equals('')">
+					<choose>
+						<when test="searchType.equals('충전')">
+							AND zpay_deal_type = '충전'
+						</when>
+						<when test="searchType.equals('환급')">
+							AND zpay_deal_type = '환급'
+						</when>
+						<when test="searchType.equals('사용')">
+							AND (zpay_deal_type = '중고출금'
+							OR zpay_deal_type = '경매출금'
+							OR zpay_deal_type = '검수비')
+						</when>
+						<when test="searchType.equals('수익')">
+							AND (zpay_deal_type = '중고입금'
+							OR zpay_deal_type = '경매취소환불'
+							OR zpay_deal_type = '경매입금')
+						</when>
+					</choose>
+				</if>
+				<if test="!startDate.equals('') and !endDate.equals('')">
+					AND zpay_time >= #{startDate}
+					AND #{endDate} >= zpay_time
+				</if>
+			ORDER BY 
+				zpay_time DESC
+	</select>
+	
+	<!-- ZPAY 사용 내역(목록) 조회 - 필터링 적용 -->
+	<select id="selectZpayHistoryList" resultType="com.itwillbs.zero.vo.ZpayHistoryVO">
+		SELECT zh.*
+				, ap1.auction_title AS order_auction_title
+				, ap2.auction_title AS auction_title
+				, os.order_secondhand_product
+				, s.secondhand_idx
+				, s.member_id AS seller_id
+				, oa.auction_idx AS auctionIdxForOrderAuction
+			FROM ZPAY_HISTORY zh
+				LEFT JOIN ORDER_SECONDHAND os 
+					ON zh.order_secondhand_idx = os.order_secondhand_idx
+				LEFT JOIN SECONDHAND s
+					ON s.secondhand_idx = os.secondhand_idx
+				LEFT JOIN ORDER_AUCTION oa 
+					ON zh.order_auction_idx = oa.order_auction_idx
+				LEFT JOIN AUCTION_PRODUCT ap1
+					ON ap1.auction_idx = oa.auction_idx	
+				LEFT JOIN AUCTION_PRODUCT ap2
+					ON ap2.auction_idx = zh.auction_idx					
+			WHERE
+				zh.member_id = #{member_id}
+			<if test="!searchType.equals('')">
+				<choose>
+					<when test="searchType.equals('충전')">
+						AND zpay_deal_type = '충전'
+					</when>
+					<when test="searchType.equals('환급')">
+						AND zpay_deal_type = '환급'
+					</when>
+					<when test="searchType.equals('사용')">
+						AND (zpay_deal_type = '중고출금'
+						OR zpay_deal_type = '경매출금'
+						OR zpay_deal_type = '검수비')
+					</when>
+					<when test="searchType.equals('수익')">
+						AND (zpay_deal_type = '중고입금'
+						OR zpay_deal_type = '경매취소환불'
+						OR zpay_deal_type = '경매입금')
+					</when>
+				</choose>
+			</if>
+			<if test="!startDate.equals('') and !endDate.equals('')">
+				AND zpay_time >= #{startDate}
+				AND #{endDate} >= zpay_time
+			</if>
+		ORDER BY 
+			zpay_time DESC
+		<if test="!startRow.equals('') and !listLimit.equals('') ">
+			LIMIT
+				#{startRow}
+				, #{listLimit}
+		</if>
+	</select>
+
+	<!-- 
+	1. 계좌 목록 조회 
+	2. (계좌 여러개 등록할 경우) 사용자의 계좌 목록 가져오기
+	-->
+	<select id="selectMyAccountList" resultType="com.itwillbs.zero.vo.ZpayVO">
+		SELECT * FROM ZPAY
+		WHERE member_id = #{member_id}
+	</select>
+	
+	<!-- ZPAY 번호 조회 -->
+	<select id="selectZpayIdx" resultType="int">
+		SELECT * FROM ZPAY
+		WHERE member_id = #{member_id}
+	</select>
+	
+	
+	<!-- 암호화된 ZPAY 비번 조회 -->
+	<select id="selectZpayPasswd" resultType="string">
+		SELECT zpay_passwd FROM ZPAY
+		WHERE member_id = #{member_id}
+	</select>
+	
+	<!-- ZPAY_HISTORY 테이블에 충전/환급/중고입출금/경매입출금 내역 추가 -->
+	<insert id="insertZpayHistory">
+		INSERT INTO 
+			ZPAY_HISTORY(
+				zpay_history_idx
+				, zpay_idx
+				, zpay_time
+				, zpay_amount
+				, zpay_balance
+				<if test="order_auction_idx != 0">
+					, order_auction_idx
+				</if>
+				<if test="order_secondhand_idx != 0">
+					, order_secondhand_idx
+				</if>
+				, zpay_deal_type
+				, member_id
+				)
+			VALUES(
+				null
+				, #{zpay_idx}
+				, now()
+				<choose>
+					<when test="zpay_deal_type.equals('충전')">
+						, #{zpay_amount} * 1.03
+						, #{zpay_balance} + #{zpay_amount} * 1.03		
+					</when>
+					<when test="zpay_deal_type.equals('환급')">
+						, #{zpay_amount}
+						, #{zpay_balance} - #{zpay_amount}
+					</when>
+					<when test="zpay_deal_type.equals('중고입금') or zpay_deal_type.equals('경매입금')">
+						, #{zpay_amount}						
+						, #{zpay_balance} + #{zpay_amount}						
+					</when>
+					<when test="zpay_deal_type.equals('중고출금') or zpay_deal_type.equals('경매출금')">
+						, #{zpay_amount}						
+						, #{zpay_balance} - #{zpay_amount}
+					</when>				
+				</choose>
+				<if test="order_auction_idx != 0">
+					, #{order_auction_idx}
+				</if>
+				<if test="order_secondhand_idx != 0">
+					, #{order_secondhand_idx}
+				</if>
+				, #{zpay_deal_type}
+				, #{member_id}
+			)
+	</insert>
+	
+	<!-- ZPYA_HISTORY 테이블에 충전내역 추가 -->
+	<insert id="insertChargeHistory">
+		INSERT INTO 
+			ZPAY_HISTORY(
+				zpay_history_idx
+				, zpay_idx
+				, zpay_amount
+				, zpay_time
+				, zpay_balance
+				, zpay_deal_type
+				, member_id)
+			VALUES(
+				null
+				, #{zpay_idx}
+				, #{zpay_amount} * 1.03
+				, now()
+				, #{zpay_balance} + #{zpay_amount} * 1.03
+				, #{zpay_deal_type}
+				, #{member_id}
+			)		
+	</insert>
+
+	<!-- 추가한 ZPAY_HISTORY 내역의 idx 찾기 -->
+	<select id="selectzpayHistoryInserted" resultType="com.itwillbs.zero.vo.ZpayHistoryVO">
+		SELECT * FROM ZPAY_HISTORY	
+			WHERE zpay_history_idx = 
+					(SELECT MAX(zpay_history_idx) FROM ZPAY_HISTORY)
+	</select>
+
+	<select id="selectzpayHistoryInserted2" resultType="com.itwillbs.zero.vo.ZpayHistoryVO">
+		SELECT * FROM ZPAY_HISTORY	
+			WHERE zpay_history_idx = 
+					(SELECT MAX(zpay_history_idx) FROM ZPAY_HISTORY WHERE member_id = #{member_id})
+	</select>
+	
+	<!-- ZERO_ACCOUNT_HISTORY 잔액 조회 -->
+	<select id="selectZeroAccountBalance" resultType="Integer">
+		SELECT IFNULL(zero_account_balance, 0) 
+			FROM ZERO_ACCOUNT_HISTORY
+			WHERE zero_account_history_idx 
+					= (SELECT MAX(zero_account_history_idx) FROM ZERO_ACCOUNT_HISTORY)
+	</select>
+	
+	<!-- ZERO_ACCOUNT_HISTORY 테이블에 입금/환급내역 추가 -->
+	<insert id="insertZeroAccountHistory">
+		INSERT INTO 
+			ZERO_ACCOUNT_HISTORY(
+				zero_account_history_idx
+				, member_id
+				, zpay_history_idx
+				, order_secondhand_idx
+				, order_auction_idx				
+				, auction_idx			-- 검수비
+				, zero_account_balance
+				, zero_account_amount
+				, zero_account_time
+				, zero_account_type)
+			VALUES(
+				null
+				, #{member_id}
+				<choose>
+					<when test="zero_account_type.equals('충전')">
+						, #{zpay_history_idx}
+						, null
+						, null
+						, null
+						, #{zero_account_balance} + #{zero_account_amount}
+						, #{zero_account_amount}
+					</when>
+					<when test="zero_account_type.equals('환급')">
+						, #{zpay_history_idx}
+						, null
+						, null
+						, null
+						, #{zero_account_balance} - #{zero_account_amount}
+						, #{zero_account_amount}
+					</when>
+					<when test="zero_account_type.equals('배달비')">
+						, #{zpay_history_idx}
+						, #{order_secondhand_idx}
+						, null
+						, null
+						, #{zero_account_balance} + #{zero_account_amount}
+						, #{zero_account_amount}
+					</when>
+					<when test="zero_account_type.equals('경매수수료')">
+						, #{zpay_history_idx}
+						, null
+						, #{order_auction_idx} 
+						, null
+						, #{zero_account_balance} + #{zero_account_amount}
+						, #{zero_account_amount}
+					</when>
+					<when test="zero_account_type.equals('검수비')">
+						, null
+						, null
+						, null
+						, #{auction_idx}
+						, #{zero_account_balance} + #{zero_account_amount}
+						, #{zero_account_amount}
+					</when>
+					<when test="zero_account_type.equals('경매취소환불')">
+						, null
+						, null
+						, null
+						, #{auction_idx}
+						, #{zero_account_balance} - #{zero_account_amount} * 0.9
+						, #{zero_account_amount}
+					</when>
+				</choose>
+				, now()
+				, #{zero_account_type}
+			)		
+	</insert>
+
+	<!-- 현재 참여하고 있는 경매 입찰이 있는 지 확인 -->
+	<select id="selectAuctionParticipant" resultType="map">
+		SELECT auction_idx, Max(auction_log_bid) AS max_auction_log_bid
+			FROM 
+				AUCTION_LOG_ROOM
+			WHERE 
+				auction_log_datetime >= CURDATE()
+			AND 
+				CURDATE() + INTERVAL 1 DAY > auction_log_datetime
+			AND 
+				MEMBER_id = #{member_id}
+			GROUP BY 
+				auction_idx;
+	</select>
+
+	<!-- ZPYA_HISTORY 테이블에 환급내역 추가 -->
+	<insert id="insertRefundHistory">
+		INSERT INTO 
+			ZPAY_HISTORY(
+				zpay_history_idx
+				, zpay_idx
+				, zpay_amount
+				, zpay_time
+				, zpay_balance
+				, zpay_deal_type
+				, member_id)
+			VALUES(
+				null
+				, #{zpay_idx}
+				, #{zpay_amount}
+				, now()
+				, #{zpay_balance} - #{zpay_amount}
+				, #{zpay_deal_type}
+				, #{member_id}
+			)		
+	</insert>
+	
+	<!-- 중고거래 내역 조회 -->
+	<select id="selectOrderSecondhand" resultType="com.itwillbs.zero.vo.OrderSecondhandVO">
+		SELECT * FROM ORDER_SECONDHAND
+		WHERE order_secondhand_idx = #{order_secondhand_idx}
+<!-- 		AND order_secondhand_iszpay = 'Y' -->
+	</select>
+
+	<!-- 경매거래 내역 조회 -->
+	<select id="selectOrderAuction" resultType="com.itwillbs.zero.vo.OrderAuctionVO">
+		SELECT * FROM ORDER_AUCTION
+		WHERE order_auction_idx = #{order_auction_idx}
+	</select>
+	
+	<!-- ZPYA_HISTORY 테이블에 송금내역 추가 -->
+<!-- 	<insert id="insertSendHistory"> -->
+<!-- 		INSERT INTO  -->
+<!-- 			ZPAY_HISTORY( -->
+<!-- 				zpay_history_idx -->
+<!-- 				, zpay_idx -->
+<!-- 				, zpay_amount -->
+<!-- 				, zpay_time -->
+<!-- 				, zpay_balance -->
+<!-- 				, zpay_deal_type -->
+<!-- 				, member_id) -->
+<!-- 			VALUES( -->
+<!-- 				null -->
+<!-- 				, #{zpay_idx} -->
+<!-- 				, #{zpay_amount} -->
+<!-- 				, now() -->
+<!-- 				, #{zpay_balance} - #{zpay_amount} -->
+<!-- 				, #{zpay_deal_type} -->
+<!-- 				, #{member_id} -->
+<!-- 			)		 -->
+<!-- 	</insert> -->
+	<!-- ZPYA_HISTORY 테이블에 수취내역 추가 -->
+<!-- 	<insert id="insertReceiveHistory"> -->
+<!-- 		INSERT INTO  -->
+<!-- 			ZPAY_HISTORY( -->
+<!-- 				zpay_history_idx -->
+<!-- 				, zpay_idx -->
+<!-- 				, zpay_amount -->
+<!-- 				, zpay_time -->
+<!-- 				, zpay_balance -->
+<!-- 				, zpay_deal_type -->
+<!-- 				, member_id) -->
+<!-- 			VALUES( -->
+<!-- 				null -->
+<!-- 				, #{zpay_idx} -->
+<!-- 				, #{zpay_amount} -->
+<!-- 				, now() -->
+<!-- 				, #{zpay_balance} + #{zpay_amount} -->
+<!-- 				, #{zpay_deal_type} -->
+<!-- 				, #{member_id} -->
+<!-- 			)		 -->
+<!-- 	</insert> -->
+
+	<!-- ZPYA_HISTORY 테이블에 송금/수취내역 추가 -->
+	<insert id="insertSendReceiveHistory">
+		INSERT INTO 
+			ZPAY_HISTORY(
+				zpay_history_idx
+				, zpay_idx
+				, zpay_amount
+				, zpay_time
+				, zpay_balance
+				, zpay_deal_type
+				, member_id
+				<if test="order_auction_idx != 0">
+					, order_auction_idx
+				</if>
+				<if test="order_secondhand_idx != 0">
+					, order_secondhand_idx
+				</if>
+				<if test="auction_idx != 0">
+					, auction_idx
+				</if>
+				)
+			VALUES(
+				null
+				, #{zpay_idx}
+				, #{zpay_amount}
+				, now()
+				<choose>
+					<when test="zpay_deal_type.equals('중고입금') or zpay_deal_type.equals('경매입금')">
+						, #{zpay_balance} + #{zpay_amount}						
+					</when>
+					<when test="zpay_deal_type.equals('중고출금') or zpay_deal_type.equals('경매출금') or zpay_deal_type.equals('검수비')">
+						, #{zpay_balance} - #{zpay_amount}
+					</when>				
+					<when test="zpay_deal_type.equals('경매취소환불')">
+						, #{zpay_balance} + #{zpay_amount} * 0.9
+					</when>				
+				</choose>
+				, #{zpay_deal_type}
+				, #{member_id}
+				<if test="order_auction_idx != 0">
+					, #{order_auction_idx}
+				</if>
+				<if test="order_secondhand_idx != 0">
+					, #{order_secondhand_idx}
+				</if>
+				<if test="auction_idx != 0">
+					, #{auction_idx}
+				</if>
+			)		
+	</insert>
+	
+	<!-- ORDER_SECONDHAND 테이블의 order_secondhand_status 변경 -->
+	<update id="updateOrderSecondhandStatus">
+		UPDATE ORDER_SECONDHAND
+		SET order_secondhand_status = '결제완료'
+		WHERE order_secondhand_idx = #{order_secondhand_idx}
+	</update>
+
+	<!-- selectZmanEarning -->
+	<select id="selectZmanEarning" resultType="com.itwillbs.zero.vo.ZmanEarningVO">
+		SELECT * FROM ZMAN_EARNING
+		WHERE zman_earning_idx = #{zman_earning_idx}
+	</select>
+
+	<!-- ZMAN 정산 -->
+	<insert id="insertZmanRefund">
+		INSERT INTO 
+			ZMAN_REFUND_HISTORY
+			VALUES(
+				null
+				, #{zman_id}
+				, #{zman_earning_idx}
+				, #{zman_net_profit}
+				, now()
+			)
+	</insert>
+
+	<!-- ZERO_ACCOUNT_HISTORY 테이블에 ZMAN 정산 -->
+	<insert id="insertZeroAccountZmanHistory">
+		INSERT INTO 
+			ZERO_ACCOUNT_HISTORY(
+				zero_account_history_idx
+				, zman_id
+				, zero_account_balance
+				, zero_account_amount
+				, zero_account_time
+				, zero_account_type)
+			VALUES(
+				null
+				, #{member_id}
+				, #{zero_account_balance} - #{zero_account_amount}
+				, #{zero_account_amount}
+				, now()
+				, #{zero_account_type}
+			)		
+	</insert>
+	
+	<!-- 마이페이지 ZPAY잔액 확인 -->
+	<select id="selectMyZpayHistory" resultType="com.itwillbs.zero.vo.ZpayHistoryVO">
+		SELECT
+			*
+		FROM
+			ZPAY_HISTORY
+		WHERE
+			member_id = #{member_id}
+		ORDER
+			BY
+			zpay_history_idx DESC
+		LIMIT
+			1
+	</select>
+	
+</mapper>

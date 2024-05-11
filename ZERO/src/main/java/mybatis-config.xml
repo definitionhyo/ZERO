@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="false"/>
+        <setting name="useGeneratedKeys" value="true"/>
+        <setting name="defaultExecutorType" value="REUSE"/>
+        <setting name="mapUnderscoreToCamelCase" value="false"/>
+	</settings>
+	<!-- 설정xml 파일 안 태그 순서(지켜야함!)
+	properties, settings, typeAliases, typeHandlers,
+	objectFactory, objectWrapperFactory,
+	reflectorFactory, plugins, environments,
+	databaseIdProvider, mappers
+	-->
+	
+	<typeAliases>
+		<typeAlias type="com.itwillbs.zero.vo.MemberVO" alias="Member"/>
+		<typeAlias type="com.itwillbs.zero.vo.ResponseTokenVO" alias="Token"/>
+		<typeAlias type="com.itwillbs.zero.vo.SecondhandVO" alias="Secondhand"/>
+		<typeAlias type="com.itwillbs.zero.vo.ChatVO" alias="Chat"/>
+		<typeAlias type="com.itwillbs.zero.vo.ChatRoomVO" alias="ChatRoom"/>
+		<typeAlias type="com.itwillbs.zero.vo.ChatRoomListVO" alias="ChatRoomList"/>
+		<typeAlias type="com.itwillbs.zero.vo.OrderSecondhandVO" alias="OrSh" /> <!-- 정의효 -->
+		<typeAlias type="com.itwillbs.zero.vo.MemberReviewVO" alias="MemReview" /> <!-- 정의효 -->
+		<typeAlias type="com.itwillbs.zero.vo.ZmanVO" alias="Zman" /> <!-- 정의효 -->
+	</typeAliases>
+
+</configuration>
