@@ -1069,7 +1069,7 @@ public class MemberController {
 	
 	
 	
-	// 멤버 이메일 인증 요청 - 작업중
+	// 멤버 이메일 인증 요청 - 작업중 정의효
 	@PostMapping("request_authMail_find_passwd")
 	public String memberFindEmailAuthPro(HttpSession session
 			, Map<String, String> map
@@ -1353,7 +1353,7 @@ public class MemberController {
 //		return "선택학 찜 목록이 삭제되었습니다";
 //	}
 	
-	// 멤버 메인화면
+	// 멤버 메인화면 - 정의효
 	@GetMapping("member_mypage_main")
 	public String memberMypageHome(HttpSession session, Model model) {
 		
@@ -1388,7 +1388,7 @@ public class MemberController {
 		return "member/member_mypage_main";
 	}
 	
-	// 멤버 중고상품 구매내역
+	// 멤버 중고상품 구매내역 - 정의효
 	@GetMapping("member_mypage_buyList")
 	public String memberMypageBuyList(HttpSession session, Model model) {
 		
@@ -1441,7 +1441,7 @@ public class MemberController {
 //		return "member/member_mypage_sellList";
 //	}
 	
-	// 멤버 참가중인 경매 내역
+	// 멤버 참가중인 경매 내역 - 정의효
 	@GetMapping("member_mypage_auctionList")
 	public String memberMypageAuctionList(HttpSession session, Model model) {
 		// 세션 아이디가 없을 경우 " 로그인이 필요합니다!" 출력 후 이전페이지로 돌아가기
@@ -1463,7 +1463,7 @@ public class MemberController {
 		return "member/member_mypage_auctionList";
 	}
 	
-	// 마이페이지 후기 리스트
+	// 마이페이지 후기 리스트 - 정의효
 	@GetMapping("member_mypage_writeReviewList")
 	public String member_mypage_writeReviewList(HttpSession session, Model model) {
 		String member_id = (String) session.getAttribute("member_id");
@@ -1474,7 +1474,7 @@ public class MemberController {
 		return "member/member_mypage_writeReviewList";
 	}
 	
-	// 마이페이지 후기 삭제
+	// 마이페이지 후기 삭제 - 정의효
 	@PostMapping("member_mypage_delete_review")
 	@ResponseBody
 	public ResponseEntity<String> member_mypage_delete_review(HttpSession session, @Param("order_secondhand_idx") String order_secondhand_idx) {
@@ -1489,13 +1489,13 @@ public class MemberController {
 	    }
 	}
 	
-	// 회원가입 메인창
+	// 회원가입 메인창 - 정의효
 	@GetMapping("join")
 	public String join() {
 		return "member/member_join";
 	}
 	
-	// 회원가입 메인 - 회원가입 버튼 클릭시 확인 절차후 리다이렉트 -> 완료창 이메일인증해주세요
+	// 회원가입 메인 - 회원가입 버튼 클릭시 확인 절차후 리다이렉트 -> 완료창 이메일인증해주세요 - 정의효
 	@PostMapping("join_pro")
 	public String memberJoinPro(MemberVO member, Model model) {
 		
@@ -1520,7 +1520,7 @@ public class MemberController {
 		}
 	}
 	
-	// 회원가입 메일인증
+	// 회원가입 메일인증 - 정의효
 	@PostMapping("sendAuthCode")
 	@ResponseBody
 	public ResponseEntity<?> sendAuthCode(@RequestParam("email") String email, HttpSession session) {
@@ -1569,7 +1569,7 @@ public class MemberController {
 	    return new ResponseEntity<>(new SuccessResponse("이메일이 성공적으로 전송되었습니다."), HttpStatus.OK);
 	}
 	
-	// 메일인증 코드 확인
+	// 메일인증 코드 확인 - 정의효
 	@PostMapping("checkAuthCode")
 	@ResponseBody
 	public ResponseEntity<?> checkAuthCode(@RequestParam("inputAuthCode") String inputAuthCode,
@@ -1588,7 +1588,7 @@ public class MemberController {
 	    }
 	}
 
-	// 핸드폰 인증
+	// 핸드폰 인증 - 정의효
 	@RequestMapping(value = "/phoneCheck", method = RequestMethod.GET)
 	@ResponseBody
 	public String sendSMS(@RequestParam("phone") String userPhoneNumber) { // 휴대폰 문자보내기
@@ -1600,7 +1600,7 @@ public class MemberController {
 		
 	}
 	
-	// 회원가입 폼에서 아이디 중복확인
+	// 회원가입 폼에서 아이디 중복확인 - 정의효
 	@PostMapping("/idCheck")
 	@ResponseBody // json 값을 가져오기 위한 어노테이션 @ResponseBody
 	public int idCheck(@RequestParam("id") String id) { // id 값을 받아오기 위한 @RequestParam
@@ -1608,7 +1608,7 @@ public class MemberController {
 		return cnt;
 	}
 	
-	// 회원가입 폼에서 닉네임 중복확인
+	// 회원가입 폼에서 닉네임 중복확인 - 정의효
 	@PostMapping("/nickCheck")
 	@ResponseBody // json 값을 가져오기 위한 어노테이션 @ResponseBody
 	public int nickCheck(@RequestParam("nickname") String nickname) { // id 값을 받아오기 위한 @RequestParam
@@ -1616,7 +1616,7 @@ public class MemberController {
 		return cnt;
 	}
 	
-	// 회원가입 폼에서 핸드폰 중복확인
+	// 회원가입 폼에서 핸드폰 중복확인 - 정의효
 	@PostMapping("/phoneCheck")
 	@ResponseBody // json 값을 가져오기 위한 어노테이션 @ResponseBody
 	public int phoneCheck(@RequestParam("phone") String phone) { // id 값을 받아오기 위한 @RequestParam
@@ -1625,7 +1625,7 @@ public class MemberController {
 	}
 	
 	
-	// 회원가입 완료 이동
+	// 회원가입 완료 이동 - 정의효
 	@GetMapping("join_complete")
 	public String memberJoinComplete() {
 		return "member/member_join_complete";
@@ -1651,13 +1651,13 @@ public class MemberController {
 //	}
 //	-------------------- ZMAN 컨트롤러 이동후 삭제예정 정의효 -----------------
 	
-	// 마이페이지 작성한 후기
+	// 마이페이지 작성한 후기 - 정의효
 	@GetMapping("member_mypage_write_review")
 	public String mypageWriteReview() {
 		return "member/member_mypage_write_review";
 	}
 	
-	// 중고상품 구매 리뷰 작성
+	// 중고상품 구매 리뷰 작성 - 정의효
 	@PostMapping("member_buyList_review")
 	public String memberBuyListReview(MemberReviewVO review
 									  , Model model
@@ -1678,7 +1678,7 @@ public class MemberController {
 		
 	}
 	
-	// 찜하기 ajax
+	// 찜하기 ajax - 정의효
 	@PostMapping("secondhandLike")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> secondhandLike(@RequestBody Map<String, Object> likeInfo) {
@@ -1712,7 +1712,7 @@ public class MemberController {
 	    return ResponseEntity.ok(response);
 	}
 	
-	// 마이페이지 - 문의 내역 페이지로 이동
+	// 마이페이지 - 문의 내역 페이지로 이동 - 정의효
 	@GetMapping("myPage_inquiry")
 	public String myPage_inquiry(HttpSession session, Model model, @RequestParam(defaultValue = "1") int pageNo) {
 		// 세션 아이디가 없을 경우 " 로그인이 필요합니다!" 출력 후 이전페이지로 돌아가기
@@ -1769,7 +1769,7 @@ public class MemberController {
 	}
 		
 
-	// 마이페이지 - 문의 내역 - 상세 조회
+	// 마이페이지 - 문의 내역 - 상세 조회 - 정의효
 	@PostMapping("inquiry_detail")
 	public String inquiry_detail(String cs_idx, @RequestParam(required= false) String cs_reply,
 						HttpSession session, Model model) {
@@ -1886,7 +1886,7 @@ public class MemberController {
 			
 		}
 		
-		// 마이 페이지 - 문의 내역 - 삭제
+		// 마이 페이지 - 문의 내역 - 삭제 - 정의효
 		@GetMapping("delete_myInquiry")
 		public String deleteMyInquiry(HttpSession session
 									, Model model
