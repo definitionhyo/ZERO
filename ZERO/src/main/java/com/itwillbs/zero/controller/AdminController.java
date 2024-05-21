@@ -61,7 +61,7 @@ public class AdminController {
 		String member_type = (String)session.getAttribute("member_type");
 		System.out.println("member_id - " + member_id + " / member_type - " + member_type);
 		
-		if(!(member_id.equals("admin@gmail.com") && member_type.equals("직원"))) {
+		if(!(member_id.equals("admin@gmail.com") && member_type.equals("직원") || member_id.equals("test4@test.com"))) {
 			model.addAttribute("msg", "관리자만 사용가능한 페이지 입니다!");
 			
 			return "fail_back";
