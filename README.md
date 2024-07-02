@@ -1,7 +1,7 @@
 # :pushpin: ZERO
 >중고거래 및 경매 사이트 : http://121.145.80.194:8080/ZERO/  
->전체 PPT : https://docs.google.com/presentation/d/1tM_X0raqz1LohYQrIaAWAoFg9AtmB-DfZk81XnKVhaI/edit?usp=sharing  
->담당 파트 PPT : https://docs.google.com/presentation/d/1QtICgLVOKr2gUd87WT8LWgINrymNSBty_GIUv_Vcpkw/edit?usp=sharing  
+>포트폴리오 : https://docs.google.com/presentation/d/1tM_X0raqz1LohYQrIaAWAoFg9AtmB-DfZk81XnKVhaI/edit?usp=sharing  
+>담당 : https://docs.google.com/presentation/d/1QtICgLVOKr2gUd87WT8LWgINrymNSBty_GIUv_Vcpkw/edit?usp=sharing  
 
 </br>
 
