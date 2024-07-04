@@ -1,7 +1,7 @@
 # :pushpin: ZERO
 >중고거래 및 경매 사이트 : http://121.145.80.194:8080/ZERO/  
->포트폴리오 : https://docs.google.com/presentation/d/1tM_X0raqz1LohYQrIaAWAoFg9AtmB-DfZk81XnKVhaI/edit?usp=sharing  
->담당 : https://docs.google.com/presentation/d/1QtICgLVOKr2gUd87WT8LWgINrymNSBty_GIUv_Vcpkw/edit?usp=sharing  
+>PPT : https://docs.google.com/presentation/d/1tM_X0raqz1LohYQrIaAWAoFg9AtmB-DfZk81XnKVhaI/edit?usp=sharing  
+
 
 </br>
 
@@ -53,4 +53,4 @@
 
 
 ## 6. 회고 / 느낀점
->
+> 1차 프로젝트보다 완성도가 높아져 성취감을 느꼈고, 기간이 조금 더 있었다면 보완해야 할 것들을 더 추가할 수 있었을거 같아서 아쉬움이 남는다.
