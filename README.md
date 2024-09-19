@@ -1,5 +1,5 @@
 # :pushpin: ZERO
->중고거래 및 경매 사이트 : http://211.216.89.172:8080/ZERO/  
+>중고거래 및 경매 사이트 : http://121.175.56.57:8080/ZERO/  
 >PPT : https://docs.google.com/presentation/d/1tM_X0raqz1LohYQrIaAWAoFg9AtmB-DfZk81XnKVhaI/edit?usp=sharing  
 
 
