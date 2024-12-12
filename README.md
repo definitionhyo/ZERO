@@ -1,6 +1,6 @@
 # :pushpin: ZERO(중고거래 및 경매 사이트)
 >이용자들은 중고 상품을 판매, 구매 및 경매를 진행할 수 있으며 또한, 배달 업무와 배송 실시간 위치 확인 기능도 제공하도록 개발된 웹 애플리케이션입니다.<br>
->홈페이지 링크 : http://112.162.76.147:8080/ZERO/ (매일 09:00 ~ 18:00)<br>
+>홈페이지 링크 : http://112.162.76.85:8080/ZERO/ (매일 09:00 ~ 18:00)<br>
 >PPT : https://docs.google.com/presentation/d/1tM_X0raqz1LohYQrIaAWAoFg9AtmB-DfZk81XnKVhaI/edit?usp=sharing  
 
 </br>
