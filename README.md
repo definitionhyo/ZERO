@@ -39,17 +39,17 @@
 ## 마이페이지
 
 ### 화면 예시
-<img src="screenshots/mypage_main.png" width="450" />
-- <strong>기능</strong>: <strong>메인 화면</strong>에서는 최신순 3개 목록을 표시합니다.
+<img src="screenshots/mypage_main.png" width="450" /><br>
+- <strong>기능</strong>: <strong>메인 화면</strong>에서는 최신순 3개 목록을 표시합니다.<br><br>
 
-<img src="screenshots/mypage_auction.png" width="450" />
-- <strong>기능</strong>: <strong>경매 목록</strong>과 관련된 페이지입니다.
+<img src="screenshots/mypage_auction.png" width="450" /><br>
+- <strong>기능</strong>: <strong>경매 목록</strong>과 관련된 페이지입니다.<br><br>
 
-<img src="screenshots/mypage_buylist&review.png" width="450" />
-- <strong>기능</strong>: <strong>구매내역</strong>과 <strong>리뷰 작성</strong> 페이지로, 사용자가 작성한 리뷰를 확인할 수 있습니다.
+<img src="screenshots/mypage_buylist&review.png" width="450" /><br>
+- <strong>기능</strong>: <strong>구매내역</strong>과 <strong>리뷰 작성</strong> 페이지로, 사용자가 작성한 리뷰를 확인할 수 있습니다.<br><br>
 
-<img src="screenshots/mypage_review.png" width="450" />
-- <strong>기능</strong>: <strong>리뷰 작성, 삭제</strong> 기능을 제공하며, <strong>AJAX</strong>로 실시간 업데이트됩니다.
+<img src="screenshots/mypage_review.png" width="450" /><br>
+- <strong>기능</strong>: <strong>리뷰 작성, 삭제</strong> 기능을 제공하며, <strong>AJAX</strong>로 실시간 업데이트됩니다.<br><br>
 
 ---
 
