@@ -12,7 +12,7 @@
 ## 회원가입
 
 ### 화면 예시
-<img src="screenshots/join.png" width="450" />
+<img src="screenshots/join.png" width="200" />
 
 - **기능**:
   - **정규식**: 이름, 이메일주소, 휴대폰번호 입력 시 유효성 검사
